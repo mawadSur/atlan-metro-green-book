@@ -50,3 +50,14 @@ ruvector.db
 firebase.config.local.js
 google-services.json
 GoogleService-Info.plist
+.secrets/
+
+# Next.js web app
+web/node_modules/
+web/.next/
+web/out/
+web/.env*.local
+
+# Supabase CLI scratch
+supabase/.temp/
+supabase/.branches/
