@@ -10,17 +10,18 @@ interface LangSwitcherProps {
 
 export default function LangSwitcher({ lang, onChange }: LangSwitcherProps) {
   return (
-    <div className="inline-flex rounded-full bg-white border border-stone-300 p-0.5">
+    <div className="inline-flex rounded-full bg-white border border-stone-300 p-0.5" role="group">
       {LANGS.map(({ code, label }) => {
         const active = code === lang;
         return (
           <button
             key={code}
             onClick={() => onChange(code)}
-            className={`px-3 py-1 text-xs rounded-full transition-colors ${
+            aria-pressed={active}
+            className={`px-4 py-2 min-h-[44px] text-xs font-medium rounded-full cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-600 active:scale-[0.98] motion-safe:transition-all motion-safe:duration-150 ${
               active
                 ? 'bg-teal-700 text-white'
-                : 'text-stone-700 hover:text-teal-700'
+                : 'text-stone-700 hover:bg-stone-50'
             }`}
           >
             {label}

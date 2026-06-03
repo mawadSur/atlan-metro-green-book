@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { Navigation, Phone, X, Tag } from 'lucide-react';
 import type { Location, Lang } from '@/lib/types';
 import { typeStyle, localized, typeLabel, googleMapsUrl, discountOffer } from '@/lib/display';
 import { t } from '@/i18n/strings';
@@ -52,9 +53,9 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
           <button
             onClick={onClose}
             aria-label={t.close[lang]}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+            className="absolute top-3 right-3 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white active:scale-[0.98] cursor-pointer motion-safe:transition-all motion-safe:duration-150"
           >
-            ×
+            <X size={20} />
           </button>
         </div>
 
@@ -102,7 +103,10 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
           {/* Discount Offer */}
           {loc.discount_code && (
             <div className="bg-teal-50 border border-teal-200 rounded-xl p-3 space-y-2">
-              <div className="text-teal-900 font-semibold text-sm">{t.offer[lang]}</div>
+              <div className="flex items-center gap-2 text-teal-900 font-semibold text-sm">
+                <Tag size={16} />
+                <span>{t.offer[lang]}</span>
+              </div>
               <p className="text-teal-800 text-sm">{offer}</p>
               <div className="inline-block px-3 py-1 bg-white rounded-full border border-teal-300">
                 <code className="text-teal-900 font-mono text-sm font-bold">
@@ -119,16 +123,18 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
             href={googleMapsUrl(loc)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 bg-teal-700 text-white rounded-xl py-3 text-center font-medium hover:bg-teal-800 transition-colors"
+            className="flex-1 bg-teal-700 text-white rounded-xl py-3 min-h-[44px] flex items-center justify-center gap-2 font-medium hover:bg-teal-800 focus-visible:ring-2 focus-visible:ring-teal-600 active:scale-[0.98] cursor-pointer motion-safe:transition-all motion-safe:duration-150"
           >
-            {t.directions[lang]}
+            <Navigation size={18} />
+            <span>{t.directions[lang]}</span>
           </a>
           {loc.phone && (
             <a
               href={`tel:${loc.phone}`}
-              className="px-6 py-3 border-2 border-stone-300 text-stone-700 rounded-xl font-medium hover:bg-stone-50 transition-colors"
+              className="px-6 py-3 min-h-[44px] border-2 border-stone-300 text-stone-700 rounded-xl font-medium hover:bg-stone-50 focus-visible:ring-2 focus-visible:ring-teal-600 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 motion-safe:transition-all motion-safe:duration-150"
             >
-              {t.call[lang]}
+              <Phone size={18} />
+              <span>{t.call[lang]}</span>
             </a>
           )}
         </div>

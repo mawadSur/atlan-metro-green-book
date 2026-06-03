@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { MapPin, List } from 'lucide-react';
 import type { City, Filters, Lang, Location } from '@/lib/types';
 import { localized } from '@/lib/display';
 import { LANGS, t } from '@/i18n/strings';
@@ -10,6 +11,8 @@ import LocationDetail from './LocationDetail';
 import FilterBar from './FilterBar';
 import SearchBar from './SearchBar';
 import LangSwitcher from './LangSwitcher';
+import WorldCupBanner from './WorldCupBanner';
+import TopNav from './TopNav';
 
 // Leaflet cannot server-render — load the map only on the client.
 const MapView = dynamic(() => import('./MapView'), {
@@ -40,6 +43,7 @@ export default function AppShell({
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Location | null>(null);
   const [view, setView] = useState<'map' | 'list'>('map'); // mobile toggle
+  const [worldCupFilter, setWorldCupFilter] = useState(false);
 
   const dir = LANGS.find((l) => l.code === lang)?.dir ?? 'ltr';
 
@@ -50,13 +54,16 @@ export default function AppShell({
       if (filters.alcohol_free && !loc.alcohol_free) return false;
       if (filters.prayer_space && !loc.prayer_space) return false;
       if (filters.family_friendly && !loc.family_friendly) return false;
+      if (worldCupFilter && !(loc.worldcup_special || loc.type === 'worldcup_venue')) return false;
       if (q) {
         const hay = `${loc.name_en} ${loc.name_ar} ${loc.name_es} ${loc.address}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [locations, filters, query]);
+  }, [locations, filters, query, worldCupFilter]);
+
+  const hasActiveFilters = Object.values(filters).some((v) => v) || query || worldCupFilter;
 
   const center: [number, number] = city
     ? [city.center_lat, city.center_lng]
@@ -64,7 +71,7 @@ export default function AppShell({
   const zoom = city?.default_zoom ?? 11;
 
   return (
-    <div dir={dir} className="flex flex-col h-screen">
+    <div dir={dir} className="flex flex-col min-h-dvh">
       {/* Header */}
       <header className="shrink-0 bg-gradient-to-r from-teal-700 to-emerald-700 text-white">
         <div className="px-4 py-3 flex items-center justify-between gap-3">
@@ -76,6 +83,11 @@ export default function AppShell({
           </div>
           <LangSwitcher lang={lang} onChange={setLang} />
         </div>
+        <TopNav
+          lang={lang}
+          currentView={worldCupFilter ? 'worldcup' : 'places'}
+          onWorldCupClick={() => setWorldCupFilter(!worldCupFilter)}
+        />
         <div className="px-4 pb-3 space-y-2">
           <SearchBar value={query} onChange={setQuery} lang={lang} />
           <FilterBar filters={filters} onChange={setFilters} lang={lang} />
@@ -84,17 +96,21 @@ export default function AppShell({
 
       {/* Mobile view toggle */}
       <div className="shrink-0 sm:hidden flex border-b border-stone-200 bg-white">
-        {(['map', 'list'] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setView(v)}
-            className={`flex-1 py-2 text-sm font-medium ${
-              view === v ? 'text-teal-700 border-b-2 border-teal-700' : 'text-stone-500'
-            }`}
-          >
-            {t[v][lang]}
-          </button>
-        ))}
+        {(['map', 'list'] as const).map((v) => {
+          const Icon = v === 'map' ? MapPin : List;
+          return (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className={`flex-1 py-3 min-h-[44px] flex items-center justify-center gap-2 text-sm font-medium cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-600 active:scale-[0.98] motion-safe:transition-all motion-safe:duration-150 ${
+                view === v ? 'text-teal-700 border-b-2 border-teal-700' : 'text-stone-500 hover:text-teal-600'
+              }`}
+            >
+              <Icon size={18} />
+              <span>{t[v][lang]}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Body: list + map */}
@@ -112,6 +128,12 @@ export default function AppShell({
             <p className="px-4 py-8 text-center text-stone-500">{t.noResults[lang]}</p>
           ) : (
             <div className="px-3 pb-6 grid grid-cols-1 gap-3">
+              {!hasActiveFilters && (
+                <WorldCupBanner
+                  lang={lang}
+                  onExplore={() => setWorldCupFilter(true)}
+                />
+              )}
               {filtered.map((loc) => (
                 <LocationCard
                   key={loc.id}

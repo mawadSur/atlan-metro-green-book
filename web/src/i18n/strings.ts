@@ -35,6 +35,21 @@ export const t: Record<string, Dict> = {
   noResults: { en: 'No places match your filters.', ar: 'لا توجد أماكن مطابقة.', es: 'No hay lugares que coincidan.' },
   offer: { en: 'Offer', ar: 'عرض', es: 'Oferta' },
   close: { en: 'Close', ar: 'إغلاق', es: 'Cerrar' },
+  prayerTimes: { en: 'Prayer Times', ar: 'مواقيت الصلاة', es: 'Horarios de oración' },
+  fajr: { en: 'Fajr', ar: 'الفجر', es: 'Fajr' },
+  sunrise: { en: 'Sunrise', ar: 'الشروق', es: 'Amanecer' },
+  dhuhr: { en: 'Dhuhr', ar: 'الظهر', es: 'Dhuhr' },
+  asr: { en: 'Asr', ar: 'العصر', es: 'Asr' },
+  maghrib: { en: 'Maghrib', ar: 'المغرب', es: 'Maghrib' },
+  isha: { en: 'Isha', ar: 'العشاء', es: 'Isha' },
+  nextPrayer: { en: 'Next', ar: 'القادمة', es: 'Próximo' },
+  qibla: { en: 'Qibla', ar: 'القبلة', es: 'Qibla' },
+  qiblaDirection: { en: 'Qibla Direction', ar: 'اتجاه القبلة', es: 'Dirección de la Qibla' },
+  locating: { en: 'Getting location…', ar: 'جارٍ تحديد الموقع…', es: 'Obteniendo ubicación…' },
+  locationDenied: { en: 'Location unavailable (using Atlanta)', ar: 'الموقع غير متاح (يستخدم أتلانتا)', es: 'Ubicación no disponible (usando Atlanta)' },
+  enableCompass: { en: 'Enable Compass', ar: 'تفعيل البوصلة', es: 'Habilitar brújula' },
+  compassNotAvailable: { en: 'Compass not available on this device', ar: 'البوصلة غير متاحة على هذا الجهاز', es: 'Brújula no disponible en este dispositivo' },
+  back: { en: 'Back', ar: 'رجوع', es: 'Volver' },
 };
 
 export const TYPE_LABELS: Record<LocationType, Dict> = {

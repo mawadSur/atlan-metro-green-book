@@ -56,3 +56,13 @@ body {
 /* horizontal filter row: scroll without a visible bar */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Safe area support for devices with notches/home indicators */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+  .safe-top {
+    padding-top: calc(1rem + env(safe-area-inset-top));
+  }
+}

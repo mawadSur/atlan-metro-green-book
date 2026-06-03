@@ -1,5 +1,6 @@
 'use client';
 
+import { Tag } from 'lucide-react';
 import type { Location, Lang } from '@/lib/types';
 import { typeStyle, localized, typeLabel } from '@/lib/display';
 import { t } from '@/i18n/strings';
@@ -18,7 +19,7 @@ export default function LocationCard({ loc, lang, onClick }: LocationCardProps) 
   return (
     <button
       onClick={onClick}
-      className="w-full rounded-2xl bg-white border border-stone-200 overflow-hidden hover:shadow-md transition-shadow text-start"
+      className="w-full rounded-2xl bg-white border border-stone-200 overflow-hidden min-h-[44px] cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-600 text-start motion-safe:hover:shadow-md motion-safe:hover:-translate-y-0.5 motion-safe:transition-all motion-safe:duration-200"
       type="button"
     >
       <ImageThumb loc={loc} className="h-32 w-full rounded-t-2xl" />
@@ -27,8 +28,9 @@ export default function LocationCard({ loc, lang, onClick }: LocationCardProps) 
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-stone-900 truncate flex-1">{name}</h3>
           {loc.discount_code && (
-            <span className="shrink-0 px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded">
-              {t.offer[lang]}
+            <span className="shrink-0 px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded flex items-center gap-1">
+              <Tag size={12} />
+              <span>{t.offer[lang]}</span>
             </span>
           )}
         </div>
