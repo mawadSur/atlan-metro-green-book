@@ -19,9 +19,11 @@ Launch city: **Metro Atlanta**. Built for the **FIFA World Cup 2026**.
 
 - **Expo (React Native)** — iOS, Android, and Web from one codebase
 - **Leaflet + OpenStreetMap** — interactive maps, no API key required
-- **Local-first seed data** with an optional **Firebase** backend
+- **Local-first seed data** with an optional **Supabase (Postgres)** backend
 - **OpenStreetMap Overpass + Nominatim** — free data source for auto-onboarding cities
 - Prayer times computed locally (no network needed)
+
+See [`docs/DATABASE.md`](docs/DATABASE.md) for the two-tier data model and schema.
 
 ## Run
 
