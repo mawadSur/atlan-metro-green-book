@@ -1,0 +1,138 @@
+'use client';
+
+import { useEffect } from 'react';
+import type { Location, Lang } from '@/lib/types';
+import { typeStyle, localized, typeLabel, googleMapsUrl, discountOffer } from '@/lib/display';
+import { t } from '@/i18n/strings';
+import ImageThumb from './ImageThumb';
+
+interface LocationDetailProps {
+  loc: Location | null;
+  lang: Lang;
+  onClose: () => void;
+}
+
+export default function LocationDetail({ loc, lang, onClose }: LocationDetailProps) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
+  if (!loc) return null;
+
+  const style = typeStyle(loc.type);
+  const name = localized(loc, 'name', lang);
+  const hours = localized(loc, 'hours', lang);
+  const offer = discountOffer(loc, lang);
+
+  const features = [
+    { flag: loc.halal_certified, label: t.halal[lang] },
+    { flag: loc.prayer_space, label: t.prayer_space[lang] },
+    { flag: loc.alcohol_free, label: t.alcohol_free[lang] },
+    { flag: loc.family_friendly, label: t.family_friendly[lang] },
+  ].filter(f => f.flag);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-y-auto shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header Image with Close Button */}
+        <div className="relative">
+          <ImageThumb loc={loc} className="h-44 w-full rounded-t-2xl" />
+          <button
+            onClick={onClose}
+            aria-label={t.close[lang]}
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Body Content */}
+        <div className="p-4 space-y-3">
+          {/* Type Badge */}
+          <div
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-sm font-medium"
+            style={{ backgroundColor: style.pin }}
+          >
+            <span>{style.icon}</span>
+            <span>{typeLabel(loc.type, lang)}</span>
+          </div>
+
+          {/* Name */}
+          <h2 className="text-xl font-bold text-stone-900">{name}</h2>
+
+          {/* Address */}
+          {loc.address && (
+            <p className="text-stone-600 text-sm">{loc.address}</p>
+          )}
+
+          {/* Hours */}
+          {hours && (
+            <div className="text-sm">
+              <span className="text-stone-500 font-medium">{t.hours[lang]}: </span>
+              <span className="text-stone-700">{hours}</span>
+            </div>
+          )}
+
+          {/* Feature Chips */}
+          {features.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {features.map((feature, idx) => (
+                <span
+                  key={idx}
+                  className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-xs font-medium"
+                >
+                  {feature.label}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Discount Offer */}
+          {loc.discount_code && (
+            <div className="bg-teal-50 border border-teal-200 rounded-xl p-3 space-y-2">
+              <div className="text-teal-900 font-semibold text-sm">{t.offer[lang]}</div>
+              <p className="text-teal-800 text-sm">{offer}</p>
+              <div className="inline-block px-3 py-1 bg-white rounded-full border border-teal-300">
+                <code className="text-teal-900 font-mono text-sm font-bold">
+                  {loc.discount_code}
+                </code>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="p-4 pt-0 flex gap-2">
+          <a
+            href={googleMapsUrl(loc)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-teal-700 text-white rounded-xl py-3 text-center font-medium hover:bg-teal-800 transition-colors"
+          >
+            {t.directions[lang]}
+          </a>
+          {loc.phone && (
+            <a
+              href={`tel:${loc.phone}`}
+              className="px-6 py-3 border-2 border-stone-300 text-stone-700 rounded-xl font-medium hover:bg-stone-50 transition-colors"
+            >
+              {t.call[lang]}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
