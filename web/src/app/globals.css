@@ -48,6 +48,10 @@ body {
 /* Leaflet polish */
 .leaflet-popup-content-wrapper { border-radius: 12px; }
 .leaflet-container { font-family: inherit; background: #e7e5e4; }
+/* Keep Leaflet panes/controls below app chrome (modal uses z-[2000]) */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom { z-index: 400; }
 
 /* horizontal filter row: scroll without a visible bar */
 .no-scrollbar::-webkit-scrollbar { display: none; }
