@@ -58,4 +58,10 @@ A new city is added by running the onboarding engine, which:
 4. Auto-translates names/hours into the three supported languages.
 5. Emits a ready-to-import city data file.
 
-See `docs/ONBOARDING.md`.
+```bash
+# Pull Muslim-friendly places for all of Metro Atlanta
+npm run onboard -- "Atlanta, Georgia, USA" --id atlanta --radius 40
+```
+
+This already generated `src/data/cities/atlanta.json` (39 live places: mosques,
+halal restaurants, halal markets). See `docs/ONBOARDING.md` for all options.

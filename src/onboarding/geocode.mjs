@@ -44,3 +44,19 @@ export async function geocodeCity(query) {
 export function bboxToOverpass({ south, west, north, east }) {
   return `${south},${west},${north},${east}`;
 }
+
+/**
+ * Build a bounding box of ~`radiusKm` around a center point. Useful when a
+ * geocoded city bbox is too tight (e.g. "Atlanta" returns the city core, but
+ * we want the whole metro). 1° latitude ≈ 111km; longitude scales by cos(lat).
+ */
+export function bboxFromRadius(lat, lng, radiusKm) {
+  const dLat = radiusKm / 111;
+  const dLng = radiusKm / (111 * Math.cos((lat * Math.PI) / 180));
+  return {
+    south: lat - dLat,
+    north: lat + dLat,
+    west: lng - dLng,
+    east: lng + dLng,
+  };
+}
