@@ -35,7 +35,7 @@ STOCK_IMAGES = {
     'museum': 'https://images.unsplash.com/photo-1565626424178-c699f6601afd?w=1024&q=80',
     'attraction': 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1024&q=80',
     'mall': 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1024&q=80',
-    'worldcup_venue': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1024&q=80',
+    'worldcup_venue': 'https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=1024&q=80',
 }
 
 
