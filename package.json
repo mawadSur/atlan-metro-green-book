@@ -8,12 +8,18 @@
     "react": "19.2.3",
     "react-native": "0.85.3"
   },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.48.1",
+    "vitest": "^3.2.0"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "onboard": "node scripts/onboard-city.mjs"
+    "onboard": "node scripts/onboard-city.mjs",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/normalize.test.mjs tests/i18n.test.mjs"
   },
   "private": true
 }

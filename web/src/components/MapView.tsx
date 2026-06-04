@@ -1,16 +1,24 @@
 'use client';
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import type { Location, Lang } from '@/lib/types';
 import { typeStyle, localized, typeLabel } from '@/lib/display';
+
+export interface MapBounds {
+  south: number;
+  north: number;
+  west: number;
+  east: number;
+}
 
 interface MapViewProps {
   locations: Location[];
   lang: Lang;
   selectedId?: string | null;
   onSelect: (loc: Location) => void;
+  onMoveEnd?: (bounds: MapBounds) => void;
   center: [number, number];
   zoom: number;
 }
@@ -34,11 +42,28 @@ function createPinIcon(loc: Location): L.DivIcon {
 function MapController({
   locations,
   selectedId,
+  onMoveEnd,
 }: {
   locations: Location[];
   selectedId?: string | null;
+  onMoveEnd?: (bounds: MapBounds) => void;
 }) {
   const map = useMap();
+
+  // Track viewport changes for incremental loading
+  useMapEvents({
+    moveend: () => {
+      if (onMoveEnd) {
+        const bounds = map.getBounds();
+        onMoveEnd({
+          south: bounds.getSouth(),
+          north: bounds.getNorth(),
+          west: bounds.getWest(),
+          east: bounds.getEast(),
+        });
+      }
+    },
+  });
 
   useEffect(() => {
     if (locations.length >= 2) {
@@ -66,6 +91,7 @@ export default function MapView({
   lang,
   selectedId,
   onSelect,
+  onMoveEnd,
   center,
   zoom,
 }: MapViewProps) {
@@ -82,7 +108,11 @@ export default function MapView({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
-        <MapController locations={locations} selectedId={selectedId} />
+        <MapController
+          locations={locations}
+          selectedId={selectedId}
+          onMoveEnd={onMoveEnd}
+        />
         {locations.map((loc) => (
           <Marker
             key={loc.id}
