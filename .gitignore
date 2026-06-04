@@ -62,3 +62,7 @@ web/.env*.local
 supabase/.temp/
 supabase/.branches/
 .gstack/
+
+# Python scraper venv
+scripts/py/venv/
+scripts/py/__pycache__/
