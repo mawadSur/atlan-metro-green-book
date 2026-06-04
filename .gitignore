@@ -61,3 +61,4 @@ web/.env*.local
 # Supabase CLI scratch
 supabase/.temp/
 supabase/.branches/
+.gstack/

@@ -49,6 +49,15 @@ export const t: Record<string, Dict> = {
   locationDenied: { en: 'Location unavailable (using Atlanta)', ar: 'الموقع غير متاح (يستخدم أتلانتا)', es: 'Ubicación no disponible (usando Atlanta)' },
   enableCompass: { en: 'Enable Compass', ar: 'تفعيل البوصلة', es: 'Habilitar brújula' },
   compassNotAvailable: { en: 'Compass not available on this device', ar: 'البوصلة غير متاحة على هذا الجهاز', es: 'Brújula no disponible en este dispositivo' },
+  calibrating: { en: 'Calibrating…', ar: 'جارٍ المعايرة…', es: 'Calibrando…' },
+  calibrated: { en: 'Calibrated', ar: 'تمت المعايرة', es: 'Calibrado' },
+  calibrateHint: { en: 'Move your phone in a figure-8 pattern', ar: 'حرك هاتفك في نمط رقم 8', es: 'Mueva su teléfono en forma de ocho' },
+  recalibrate: { en: 'Recalibrate', ar: 'إعادة المعايرة', es: 'Recalibrar' },
+  accuracyLow: { en: 'Low accuracy', ar: 'دقة منخفضة', es: 'Baja precisión' },
+  accuracyMedium: { en: 'Medium accuracy', ar: 'دقة متوسطة', es: 'Precisión media' },
+  accuracyHigh: { en: 'High accuracy', ar: 'دقة عالية', es: 'Alta precisión' },
+  noAbsoluteHeading: { en: 'Device cannot provide absolute heading', ar: 'الجهاز لا يمكنه توفير اتجاه مطلق', es: 'El dispositivo no puede proporcionar rumbo absoluto' },
+  staticBearingOnly: { en: 'Showing static bearing only', ar: 'عرض الاتجاه الثابت فقط', es: 'Solo mostrando rumbo estático' },
   back: { en: 'Back', ar: 'رجوع', es: 'Volver' },
 };
 
