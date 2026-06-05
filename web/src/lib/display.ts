@@ -44,3 +44,35 @@ export function googleMapsUrl(loc: Location): string {
   const q = encodeURIComponent(`${loc.name_en} ${loc.address}`.trim());
   return `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}&destination_place_id=&query=${q}`;
 }
+
+export interface HalalLabel {
+  text: string;
+  tone: 'verified' | 'listed' | 'unverified' | 'none';
+}
+
+/** Return honest halal label based on halal_status field. */
+export function halalLabel(loc: Location, lang: Lang): HalalLabel {
+  if (loc.halal_status === 'verified') {
+    // Verified by a mosque or certifier
+    const verifier = loc.verified_by || 'certifier';
+    const text = lang === 'ar'
+      ? `حلال - تم التحقق من قبل ${verifier}`
+      : lang === 'es'
+      ? `Halal — verificado por ${verifier}`
+      : `Halal — verified by ${verifier}`;
+    return { text, tone: 'verified' };
+  }
+
+  if (loc.halal_status === 'community-listed') {
+    // Community-listed but not officially verified
+    const text = lang === 'ar'
+      ? 'حلال (قائمة المجتمع، غير تم التحقق)'
+      : lang === 'es'
+      ? 'Halal (listado comunitario, no verificado)'
+      : 'Halal (community-listed, unverified)';
+    return { text, tone: 'listed' };
+  }
+
+  // unverified status and halal_certified is false -> no halal chip
+  return { text: '', tone: 'none' };
+}

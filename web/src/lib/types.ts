@@ -27,6 +27,9 @@ export interface Location {
   hours_ar: string;
   hours_es: string;
   halal_certified: boolean;
+  halal_status: 'verified' | 'community-listed' | 'unverified';
+  verified_by: string;
+  verified_at: string | null;
   alcohol_free: boolean;
   prayer_space: boolean;
   family_friendly: boolean;

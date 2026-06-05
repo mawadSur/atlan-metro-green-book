@@ -2,19 +2,28 @@
 
 import { Tag } from 'lucide-react';
 import type { Location, Lang } from '@/lib/types';
-import { typeStyle, localized, typeLabel } from '@/lib/display';
+import { typeStyle, localized, typeLabel, halalLabel } from '@/lib/display';
 import { t } from '@/i18n/strings';
 import ImageThumb from './ImageThumb';
+import type { Coordinates } from '@/lib/geo';
+import { haversineDistance, formatDistance } from '@/lib/geo';
 
 interface LocationCardProps {
   loc: Location;
   lang: Lang;
   onClick: () => void;
+  userCoords?: Coordinates | null;
 }
 
-export default function LocationCard({ loc, lang, onClick }: LocationCardProps) {
+export default function LocationCard({ loc, lang, onClick, userCoords }: LocationCardProps) {
   const style = typeStyle(loc.type);
   const name = localized(loc, 'name', lang);
+  const halal = halalLabel(loc, lang);
+
+  // Calculate distance if user coords available
+  const distance = userCoords
+    ? haversineDistance(userCoords, { lat: loc.lat, lng: loc.lng })
+    : null;
 
   return (
     <button
@@ -46,13 +55,25 @@ export default function LocationCard({ loc, lang, onClick }: LocationCardProps) 
           <span>{typeLabel(loc.type, lang)}</span>
         </div>
 
-        <p className="text-sm text-stone-500 truncate">{loc.address}</p>
+        <div className="space-y-1">
+          <p className="text-sm text-stone-500 truncate">{loc.address}</p>
+          {distance && (
+            <p className="text-xs text-stone-400">
+              {formatDistance(distance, lang)} {t.away[lang]}
+            </p>
+          )}
+        </div>
 
-        {(loc.halal_certified || loc.prayer_space || loc.alcohol_free || loc.family_friendly) && (
+        {(halal.tone !== 'none' || loc.prayer_space || loc.alcohol_free || loc.family_friendly) && (
           <div className="flex flex-wrap gap-1.5 pt-1">
-            {loc.halal_certified && (
-              <span className="px-2 py-0.5 text-xs bg-stone-100 text-stone-700 rounded">
-                {t.halal[lang]}
+            {halal.tone === 'verified' && (
+              <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded font-medium">
+                {halal.text}
+              </span>
+            )}
+            {halal.tone === 'listed' && (
+              <span className="px-2 py-0.5 text-xs bg-amber-50 text-amber-700 rounded">
+                {halal.text}
               </span>
             )}
             {loc.prayer_space && (

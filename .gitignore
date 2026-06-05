@@ -45,6 +45,11 @@ ruvector.db
 .swarm/
 .claude-flow/
 .mcp.json
+agentdb.rvf
+agentdb.rvf.lock
+
+# stray root lockfile (the real lockfile is web/package-lock.json)
+/package-lock.json
 
 # Firebase secrets
 firebase.config.local.js
@@ -66,3 +71,5 @@ supabase/.branches/
 # Python scraper venv
 scripts/py/venv/
 scripts/py/__pycache__/
+scraped_images/
+scripts/py/.chrome-profile/

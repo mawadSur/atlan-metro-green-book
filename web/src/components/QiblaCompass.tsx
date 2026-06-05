@@ -262,7 +262,7 @@ export default function QiblaCompass({ lang }: QiblaCompassProps) {
               opacity: isCalibrated ? 1 : 0.4,
             }}
           >
-            <Navigation className="w-12 h-12 text-teal-700 fill-teal-700 -translate-y-8" />
+            <Navigation className="w-12 h-12 text-teal-700 fill-teal-700" />
           </div>
 
           {/* Center dot */}

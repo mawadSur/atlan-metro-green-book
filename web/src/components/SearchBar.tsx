@@ -23,7 +23,7 @@ export default function SearchBar({ value, onChange, lang }: SearchBarProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={t.search[lang]}
-        className="w-full rounded-full bg-white border border-stone-300 pl-10 pr-10 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 transition-shadow motion-safe:transition-shadow motion-safe:duration-150"
+        className="w-full rounded-full bg-white border border-stone-300 pl-10 pr-10 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 transition-shadow motion-safe:transition-shadow motion-safe:duration-150"
       />
       {value && (
         <button

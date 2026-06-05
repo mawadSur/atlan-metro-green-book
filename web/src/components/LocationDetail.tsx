@@ -3,17 +3,20 @@
 import { useEffect } from 'react';
 import { Navigation, Phone, X, Tag } from 'lucide-react';
 import type { Location, Lang } from '@/lib/types';
-import { typeStyle, localized, typeLabel, googleMapsUrl, discountOffer } from '@/lib/display';
+import { typeStyle, localized, typeLabel, googleMapsUrl, discountOffer, halalLabel } from '@/lib/display';
 import { t } from '@/i18n/strings';
 import ImageThumb from './ImageThumb';
+import type { Coordinates } from '@/lib/geo';
+import { haversineDistance, formatDistance } from '@/lib/geo';
 
 interface LocationDetailProps {
   loc: Location | null;
   lang: Lang;
   onClose: () => void;
+  userCoords?: Coordinates | null;
 }
 
-export default function LocationDetail({ loc, lang, onClose }: LocationDetailProps) {
+export default function LocationDetail({ loc, lang, onClose, userCoords }: LocationDetailProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -30,12 +33,19 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
   const name = localized(loc, 'name', lang);
   const hours = localized(loc, 'hours', lang);
   const offer = discountOffer(loc, lang);
+  const halal = halalLabel(loc, lang);
+
+  // Calculate distance if user coords available
+  const distance = userCoords
+    ? haversineDistance(userCoords, { lat: loc.lat, lng: loc.lng })
+    : null;
 
   const features = [
-    { flag: loc.halal_certified, label: t.halal[lang] },
-    { flag: loc.prayer_space, label: t.prayer_space[lang] },
-    { flag: loc.alcohol_free, label: t.alcohol_free[lang] },
-    { flag: loc.family_friendly, label: t.family_friendly[lang] },
+    { flag: halal.tone === 'verified', label: halal.text, style: 'bg-green-100 text-green-800 font-medium' },
+    { flag: halal.tone === 'listed', label: halal.text, style: 'bg-amber-50 text-amber-700' },
+    { flag: loc.prayer_space, label: t.prayer_space[lang], style: 'bg-stone-100 text-stone-700' },
+    { flag: loc.alcohol_free, label: t.alcohol_free[lang], style: 'bg-stone-100 text-stone-700' },
+    { flag: loc.family_friendly, label: t.family_friendly[lang], style: 'bg-stone-100 text-stone-700' },
   ].filter(f => f.flag);
 
   return (
@@ -78,6 +88,13 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
             <p className="text-stone-600 text-sm">{loc.address}</p>
           )}
 
+          {/* Distance */}
+          {distance && (
+            <p className="text-stone-500 text-sm">
+              {formatDistance(distance, lang)} {t.away[lang]}
+            </p>
+          )}
+
           {/* Hours */}
           {hours && (
             <div className="text-sm">
@@ -92,7 +109,7 @@ export default function LocationDetail({ loc, lang, onClose }: LocationDetailPro
               {features.map((feature, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-xs font-medium"
+                  className={`px-3 py-1 rounded-full text-xs ${feature.style}`}
                 >
                   {feature.label}
                 </span>

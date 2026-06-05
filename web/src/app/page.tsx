@@ -1,4 +1,5 @@
 import AppShell from '@/components/AppShell';
+import HeroBand from '@/components/landing/HeroBand';
 import { getCity, getLocations } from '@/lib/supabase';
 
 /**
@@ -16,5 +17,10 @@ export default async function Home() {
     getLocations(cityId, { limit: 200 }),
   ]);
 
-  return <AppShell city={city} locations={initialLocations} />;
+  return (
+    <>
+      <HeroBand lang="en" />
+      <AppShell city={city} locations={initialLocations} />
+    </>
+  );
 }

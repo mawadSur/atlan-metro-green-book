@@ -2,12 +2,13 @@
 
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { MapPin, List, Loader2 } from 'lucide-react';
+import { MapPin, List, Loader2, ArrowUpDown } from 'lucide-react';
 import type { City, Filters, Lang, Location } from '@/lib/types';
 import type { MapBounds } from './MapView';
 import { localized } from '@/lib/display';
 import { LANGS, t } from '@/i18n/strings';
 import { supabase } from '@/lib/supabase';
+import { useUserLocation, haversineDistance } from '@/lib/geo';
 import LocationCard from './LocationCard';
 import LocationDetail from './LocationDetail';
 import FilterBar from './FilterBar';
@@ -90,10 +91,18 @@ export default function AppShell({
     [city]
   );
 
+  // User location for distance calculations.
+  // realUserCoords is null when we fell back to Atlanta (permission denied) —
+  // never show a distance computed from a guessed location as if it were real.
+  const { coords: userCoords, usingFallback } = useUserLocation();
+  const realUserCoords = usingFallback ? null : userCoords;
+  const [sortByNearest, setSortByNearest] = useState(false);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return allLocations.filter((loc) => {
-      if (filters.halal_certified && !loc.halal_certified) return false;
+    const results = allLocations.filter((loc) => {
+      // Halal filter now checks halal_status for 'verified' or 'community-listed'
+      if (filters.halal_certified && !(loc.halal_status === 'verified' || loc.halal_status === 'community-listed')) return false;
       if (filters.alcohol_free && !loc.alcohol_free) return false;
       if (filters.prayer_space && !loc.prayer_space) return false;
       if (filters.family_friendly && !loc.family_friendly) return false;
@@ -104,7 +113,18 @@ export default function AppShell({
       }
       return true;
     });
-  }, [allLocations, filters, query, worldCupFilter]);
+
+    // Sort by distance only if enabled and we have the user's REAL location
+    if (sortByNearest && realUserCoords) {
+      return results.sort((a, b) => {
+        const distA = haversineDistance(realUserCoords, { lat: a.lat, lng: a.lng }).miles;
+        const distB = haversineDistance(realUserCoords, { lat: b.lat, lng: b.lng }).miles;
+        return distA - distB;
+      });
+    }
+
+    return results;
+  }, [allLocations, filters, query, worldCupFilter, sortByNearest, realUserCoords]);
 
   // Cap rendered list to prevent DOM explosion
   const displayedInList = useMemo(() => {
@@ -169,15 +189,27 @@ export default function AppShell({
             view === 'list' ? 'flex' : 'hidden'
           } sm:flex flex-col w-full sm:w-[380px] md:w-[420px] shrink-0 border-e border-stone-200 bg-stone-50 overflow-y-auto`}
         >
-          <div className="px-4 py-2 flex items-center justify-between text-xs text-stone-500">
-            <span>
+          <div className="px-4 py-2 flex items-center justify-between gap-2">
+            <span className="text-xs text-stone-500">
               {filtered.length > MAX_RENDERED
                 ? `Showing ${MAX_RENDERED} of ${filtered.length}`
                 : `${filtered.length} ${t.results[lang]}`}
             </span>
-            {isLoadingViewport && (
-              <Loader2 size={14} className="animate-spin text-teal-600" />
-            )}
+            <div className="flex items-center gap-2">
+              {isLoadingViewport && (
+                <Loader2 size={14} className="animate-spin text-teal-600" />
+              )}
+              {userCoords && !usingFallback && (
+                <button
+                  onClick={() => setSortByNearest(!sortByNearest)}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-stone-600 hover:text-teal-700 focus-visible:ring-2 focus-visible:ring-teal-600 rounded cursor-pointer motion-safe:transition-colors"
+                  title={sortByNearest ? t.sortName[lang] : t.sortNearest[lang]}
+                >
+                  <ArrowUpDown size={12} />
+                  <span>{sortByNearest ? t.nearest[lang] : t.sortNearest[lang]}</span>
+                </button>
+              )}
+            </div>
           </div>
           {filtered.length === 0 ? (
             <p className="px-4 py-8 text-center text-stone-500">{t.noResults[lang]}</p>
@@ -195,6 +227,7 @@ export default function AppShell({
                   loc={loc}
                   lang={lang}
                   onClick={() => setSelected(loc)}
+                  userCoords={realUserCoords}
                 />
               ))}
             </div>
@@ -219,7 +252,7 @@ export default function AppShell({
         </section>
       </main>
 
-      <LocationDetail loc={selected} lang={lang} onClose={() => setSelected(null)} />
+      <LocationDetail loc={selected} lang={lang} onClose={() => setSelected(null)} userCoords={realUserCoords} />
     </div>
   );
 }

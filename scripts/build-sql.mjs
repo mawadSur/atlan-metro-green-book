@@ -56,6 +56,9 @@ create table if not exists locations (
   hours_ar          text default '',
   hours_es          text default '',
   halal_certified   boolean default false,
+  halal_status      text not null default 'unverified' check (halal_status in ('verified', 'community-listed', 'unverified')),
+  verified_by       text not null default '',
+  verified_at       timestamptz,
   alcohol_free      boolean default false,
   prayer_space      boolean default false,
   family_friendly   boolean default true,
@@ -81,6 +84,7 @@ create table if not exists businesses (
 
 create index if not exists locations_city_idx on locations (city_id);
 create index if not exists locations_type_idx on locations (type);
+create index if not exists locations_halal_status_idx on locations (halal_status);
 
 -- ---------- Row-Level Security ----------
 alter table cities     enable row level security;
@@ -98,6 +102,13 @@ create policy "owner updates location" on locations
   for update using (auth.uid() = claimed_by) with check (auth.uid() = claimed_by);
 create policy "owner manages business" on businesses
   for all using (auth.uid() = uid) with check (auth.uid() = uid);
+
+-- ---------- Column-Level Security (halal provenance) ----------
+-- Prevent business owners from self-certifying halal status.
+-- Only service_role and postgres can modify these columns.
+revoke update (halal_status) on locations from anon, authenticated;
+revoke update (verified_by) on locations from anon, authenticated;
+revoke update (verified_at) on locations from anon, authenticated;
 `;
 
 async function main() {
@@ -118,14 +129,15 @@ on conflict (id) do update set
       const cols = [
         'city_id', 'type', 'name_en', 'name_ar', 'name_es', 'address',
         'lat', 'lng', 'phone', 'hours_en', 'hours_ar', 'hours_es',
-        'halal_certified', 'alcohol_free', 'prayer_space', 'family_friendly',
+        'halal_certified', 'halal_status', 'alcohol_free', 'prayer_space', 'family_friendly',
         'worldcup_special', 'discount_code', 'discount_offer_en',
         'discount_offer_ar', 'discount_offer_es', 'source', 'osm_id',
       ];
       const vals = [
         c.id, r.type, r.name_en, r.name_ar, r.name_es, r.address,
         r.lat, r.lng, r.phone, r.hours_en, r.hours_ar, r.hours_es,
-        r.halal_certified, r.alcohol_free, r.prayer_space, r.family_friendly,
+        r.halal_certified, 'community-listed',
+        r.alcohol_free, r.prayer_space, r.family_friendly,
         r.worldcup_special, r.discount_code, r.discount_offer_en,
         r.discount_offer_ar, r.discount_offer_es, r.source || 'seed',
         r.osm_id || null,
