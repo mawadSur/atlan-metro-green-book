@@ -5,20 +5,32 @@ const VERSION = "v1.0.0";
 const CACHE_NAME = `green-book-${VERSION}`;
 const OFFLINE_PAGE = "/";
 
-// Assets to precache (app shell + offline fallback)
+// Assets to precache (app shell). The offline fallback IS "/" (OFFLINE_PAGE),
+// so we do not list a separate /offline.html that doesn't exist.
 const PRECACHE_ASSETS = [
   "/",
-  "/offline.html",
   "/favicon.ico",
   "/apple-touch-icon.png",
 ];
 
-// Install: precache app shell
+// Install: precache app shell.
+// Cache each asset individually so one missing/failed asset can NEVER fail the
+// whole SW install (cache.addAll is atomic — a single 404 would brick the PWA
+// for every visitor). skipWaiting still runs regardless.
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      .then((cache) =>
+        Promise.all(
+          PRECACHE_ASSETS.map((asset) =>
+            cache.add(asset).catch((err) => {
+              // tolerate an individual asset failing; log and continue
+              console.warn("[sw] precache skipped:", asset, err);
+            })
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });

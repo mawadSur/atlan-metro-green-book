@@ -1,0 +1,15 @@
+node_modules
+web/node_modules
+web/.next
+scraped_images
+scripts/py/venv
+scripts/py/.chrome-profile
+.git
+.claude
+.claude-flow
+.swarm
+.gstack
+.secrets
+agentdb.rvf
+agentdb.rvf.lock
+supabase/.temp
