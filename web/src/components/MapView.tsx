@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import type { Location, Lang } from '@/lib/types';
@@ -49,6 +49,7 @@ function MapController({
   onMoveEnd?: (bounds: MapBounds) => void;
 }) {
   const map = useMap();
+  const didInitialFit = useRef(false);
 
   // Track viewport changes for incremental loading
   useMapEvents({
@@ -65,23 +66,31 @@ function MapController({
     },
   });
 
+  // Auto-fit to all markers ONCE on first load. After that, do NOT keep
+  // re-fitting on every `locations` change (viewport fetches return a new
+  // array reference) — re-fitting was stomping the click-to-fly-to below,
+  // snapping the map back to fit-all instead of flying to the clicked place.
   useEffect(() => {
-    if (locations.length >= 2) {
+    if (!didInitialFit.current && locations.length >= 2) {
       const bounds = L.latLngBounds(
         locations.map((loc) => [loc.lat, loc.lng] as [number, number])
       );
       map.fitBounds(bounds, { padding: [50, 50] });
+      didInitialFit.current = true;
     }
   }, [map, locations]);
 
+  // Fly to the selected location whenever the selection changes. Depends only
+  // on selectedId (not `locations`) so a background data refresh can't cancel it.
   useEffect(() => {
     if (selectedId) {
       const loc = locations.find((l) => l.id === selectedId);
       if (loc) {
-        map.flyTo([loc.lat, loc.lng], 15);
+        map.flyTo([loc.lat, loc.lng], 15, { duration: 0.8 });
       }
     }
-  }, [map, selectedId, locations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, selectedId]);
 
   return null;
 }
