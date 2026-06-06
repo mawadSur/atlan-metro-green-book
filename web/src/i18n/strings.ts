@@ -80,6 +80,11 @@ export const t: Record<string, Dict> = {
   landing_dismiss: { en: 'Dismiss', ar: 'تجاهل', es: 'Cerrar' },
   landing_wc_tagline: { en: 'Explore FIFA World Cup 2026 stadiums with prayer spaces and halal dining nearby', ar: 'استكشف ملاعب كأس العالم لكرة القدم ٢٠٢٦ مع المصليات والمطاعم الحلال القريبة', es: 'Explora los estadios de la Copa Mundial FIFA 2026 con salas de oración y comida halal cercana' },
   landing_reopen: { en: 'Show intro', ar: 'عرض المقدمة', es: 'Mostrar introducción' },
+  errorTitle: { en: 'Something went wrong', ar: 'حدث خطأ ما', es: 'Algo salió mal' },
+  errorBody: { en: 'We encountered an unexpected error. Please try again.', ar: 'واجهنا خطأ غير متوقع. يرجى المحاولة مرة أخرى.', es: 'Encontramos un error inesperado. Por favor, inténtalo de nuevo.' },
+  retry: { en: 'Try again', ar: 'حاول مرة أخرى', es: 'Intentar de nuevo' },
+  errorLoadingPlaces: { en: 'We couldn\'t load the places. Please check your connection and try again.', ar: 'لم نتمكن من تحميل الأماكن. يرجى التحقق من اتصالك والمحاولة مرة أخرى.', es: 'No pudimos cargar los lugares. Por favor, verifica tu conexión e inténtalo de nuevo.' },
+  loading: { en: 'Loading…', ar: 'جارٍ التحميل…', es: 'Cargando…' },
 };
 
 export const TYPE_LABELS: Record<LocationType, Dict> = {
