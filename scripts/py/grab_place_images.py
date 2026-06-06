@@ -207,15 +207,40 @@ def collect_photo_urls(page, want: int) -> List[str]:
     return found[:want]
 
 
-def grab_one(context, loc: Dict, want: int) -> List[str]:
-    # Anchor the search at the exact coordinates so near-identical names (e.g. the
-    # four "Al-Farooq" mosques) resolve to the RIGHT place, not a shared top hit.
-    # The /@lat,lng,17z viewport biases Maps to the location's actual position.
-    query = f"{loc['name_en']} {loc.get('address') or ''}".strip()
+def _haversine_mi(lat1, lng1, lat2, lng2) -> float:
+    import math
+    R = 3958.8
+    p = math.pi / 180
+    dlat = (lat2 - lat1) * p
+    dlng = (lng2 - lng1) * p
+    a = (math.sin(dlat / 2) ** 2
+         + math.cos(lat1 * p) * math.cos(lat2 * p) * math.sin(dlng / 2) ** 2)
+    return 2 * R * math.asin(math.sqrt(a))
+
+
+def _resolved_coords(page):
+    """Read the @lat,lng Google puts in the URL once a place actually opens."""
+    m = re.search(r"@(-?\d+\.\d+),(-?\d+\.\d+)", page.url)
+    if m:
+        return float(m.group(1)), float(m.group(2))
+    return None
+
+
+def grab_one(context, loc: Dict, want: int, guard_mi: float = 0.6) -> List[str]:
+    # Disambiguation fix for near-identical names (the Al-Farooq / Al-Hedaya /
+    # Al-Quran mosques): search by the UNIQUE street ADDRESS first (names collide,
+    # addresses don't), biased to the target coords. Then GUARD: after the place
+    # opens, read Google's resolved @lat,lng from the URL and REJECT the photos if
+    # it landed more than guard_mi from the real location — better to return zero
+    # than to save another mosque's photos.
     lat, lng = loc.get("lat"), loc.get("lng")
+    addr = (loc.get("address") or "").strip()
+    name = loc["name_en"]
+    # address-first query; fall back to name if no address
+    query = f"{name}, {addr}" if addr else name
     if lat is not None and lng is not None:
         search_url = (f"https://www.google.com/maps/search/{quote(query)}/"
-                      f"@{lat},{lng},17z")
+                      f"@{lat},{lng},16z")
     else:
         search_url = f"https://www.google.com/maps/search/{quote(query)}"
     page = context.new_page()
@@ -223,13 +248,21 @@ def grab_one(context, loc: Dict, want: int) -> List[str]:
         page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
         time.sleep(2.0)
         dismiss_consent(page)
-        # If the search returned a list, click the result NEAREST the target coords
-        # (not blindly the first), so coordinate disambiguation actually sticks.
         try:
             page.click('a[href*="/maps/place/"]', timeout=4000)
             time.sleep(2.0)
         except Exception:
             pass
+
+        # Coordinate guard: confirm we opened the RIGHT place before trusting photos.
+        if lat is not None and lng is not None:
+            rc = _resolved_coords(page)
+            if rc:
+                d = _haversine_mi(lat, lng, rc[0], rc[1])
+                if d > guard_mi:
+                    print(f"[guard: opened place {d:.1f}mi off target, skipping] ", end="")
+                    return []
+
         return collect_photo_urls(page, want)
     except PlaywrightTimeout:
         return []
