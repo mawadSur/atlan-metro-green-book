@@ -47,6 +47,13 @@ export default function AppShell({
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Location | null>(null);
+  // Bumps on every select so the map re-flies even when the same place is
+  // re-selected (selectedId alone wouldn't change → no re-fly).
+  const [flyNonce, setFlyNonce] = useState(0);
+  const selectLocation = useCallback((loc: Location) => {
+    setSelected(loc);
+    setFlyNonce((n) => n + 1);
+  }, []);
   const [view, setView] = useState<'map' | 'list'>('map'); // mobile toggle
   const [worldCupFilter, setWorldCupFilter] = useState(false);
 
@@ -227,7 +234,7 @@ export default function AppShell({
                   loc={loc}
                   lang={lang}
                   onClick={() => {
-                    setSelected(loc);
+                    selectLocation(loc);
                     // On mobile the map is hidden in list view — reveal it so the
                     // user sees the map fly to the place they tapped.
                     setView('map');
@@ -249,7 +256,8 @@ export default function AppShell({
             locations={filtered}
             lang={lang}
             selectedId={selected?.id ?? null}
-            onSelect={setSelected}
+            flyNonce={flyNonce}
+            onSelect={selectLocation}
             onMoveEnd={handleViewportChange}
             center={center}
             zoom={zoom}

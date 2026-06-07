@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import type { Location, Lang } from '@/lib/types';
-import { typeStyle, localized, typeLabel } from '@/lib/display';
+import { typeStyle } from '@/lib/display';
 
 export interface MapBounds {
   south: number;
@@ -17,6 +17,8 @@ interface MapViewProps {
   locations: Location[];
   lang: Lang;
   selectedId?: string | null;
+  /** Bumps on every select (even re-selecting the same place) so the map re-flies. */
+  flyNonce?: number;
   onSelect: (loc: Location) => void;
   onMoveEnd?: (bounds: MapBounds) => void;
   center: [number, number];
@@ -42,10 +44,12 @@ function createPinIcon(loc: Location): L.DivIcon {
 function MapController({
   locations,
   selectedId,
+  flyNonce,
   onMoveEnd,
 }: {
   locations: Location[];
   selectedId?: string | null;
+  flyNonce?: number;
   onMoveEnd?: (bounds: MapBounds) => void;
 }) {
   const map = useMap();
@@ -104,20 +108,37 @@ function MapController({
         return;
       }
       map.invalidateSize();
-      map.flyTo([loc.lat, loc.lng], 15, { duration: 0.8 });
+
+      // On desktop (sm+, ≥640px) the LocationDetail side panel is docked over the
+      // right ~400px of the map. Centering the pin in the FULL container would put
+      // it behind that panel (esp. on 1024–1280px screens) — looking like the wrong
+      // spot again. Shift the fly target so the pin lands in the visible left area:
+      // move the map center RIGHT by half the panel width, computed at the target
+      // zoom so it's correct after the zoom animation.
+      const TARGET_ZOOM = 15;
+      const PANEL_W = 400;
+      const target = L.latLng(loc.lat, loc.lng);
+      if (window.innerWidth >= 640) {
+        const pt = map.project(target, TARGET_ZOOM);
+        const shifted = pt.add([PANEL_W / 2, 0]); // center sits right of pin → pin appears left of panel
+        map.flyTo(map.unproject(shifted, TARGET_ZOOM), TARGET_ZOOM, { duration: 0.8 });
+      } else {
+        map.flyTo(target, TARGET_ZOOM, { duration: 0.8 });
+      }
     };
     raf = window.requestAnimationFrame(flyWhenReady);
     return () => window.cancelAnimationFrame(raf);
+    // flyNonce in deps so re-selecting the SAME place (selectedId unchanged) still re-flies.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, selectedId]);
+  }, [map, selectedId, flyNonce]);
 
   return null;
 }
 
 export default function MapView({
   locations,
-  lang,
   selectedId,
+  flyNonce,
   onSelect,
   onMoveEnd,
   center,
@@ -139,9 +160,13 @@ export default function MapView({
         <MapController
           locations={locations}
           selectedId={selectedId}
+          flyNonce={flyNonce}
           onMoveEnd={onMoveEnd}
         />
         {locations.map((loc) => (
+          // No <Popup>: clicking a pin opens the LocationDetail panel (which shows
+          // name/type/address already), and Leaflet popup autoPan would fight the
+          // flyTo below, landing the pin off-center. One source of detail, one camera move.
           <Marker
             key={loc.id}
             position={[loc.lat, loc.lng]}
@@ -149,17 +174,7 @@ export default function MapView({
             eventHandlers={{
               click: () => onSelect(loc),
             }}
-          >
-            <Popup>
-              <div className="text-sm">
-                <div className="font-semibold">{localized(loc, 'name', lang)}</div>
-                <div className="text-xs text-gray-600 mt-1">
-                  {typeLabel(loc.type, lang)}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">{loc.address}</div>
-              </div>
-            </Popup>
-          </Marker>
+          />
         ))}
       </MapContainer>
     </div>

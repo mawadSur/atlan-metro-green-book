@@ -50,11 +50,16 @@ export default function LocationDetail({ loc, lang, onClose, userCoords }: Locat
 
   return (
     <div
-      className="fixed inset-0 z-[2000] flex items-end sm:items-center justify-center bg-black/50"
+      // Mobile: dimmed bottom sheet (tap-outside closes).
+      // Desktop (sm+): right-docked side panel with NO dimming backdrop and
+      // pointer-events-none on the wrapper, so the map stays visible + clickable
+      // and you actually SEE it fly to the place you tapped. (Closing on desktop
+      // is via the X button or Escape — there is no full-screen click-catcher.)
+      className="fixed inset-0 z-[2000] flex items-end justify-center bg-black/50 sm:items-stretch sm:justify-end sm:bg-transparent sm:pointer-events-none"
       onClick={onClose}
     >
       <div
-        className="relative bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-y-auto shadow-2xl"
+        className="relative bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-y-auto shadow-2xl sm:rounded-none sm:max-w-none sm:w-[400px] sm:h-full sm:max-h-none sm:pointer-events-auto motion-safe:animate-in motion-safe:slide-in-from-bottom sm:motion-safe:slide-in-from-right motion-safe:duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Image with Close Button */}
