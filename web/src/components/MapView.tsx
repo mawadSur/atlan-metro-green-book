@@ -82,13 +82,32 @@ function MapController({
 
   // Fly to the selected location whenever the selection changes. Depends only
   // on selectedId (not `locations`) so a background data refresh can't cancel it.
+  //
+  // IMPORTANT: when the map container is hidden (mobile list view) or was just
+  // revealed, Leaflet has a stale/zero size and flyTo silently no-ops. So we
+  // first invalidateSize(), then fly on the next frame. We also guard against a
+  // zero-size container by retrying briefly until the map has real dimensions.
   useEffect(() => {
-    if (selectedId) {
-      const loc = locations.find((l) => l.id === selectedId);
-      if (loc) {
-        map.flyTo([loc.lat, loc.lng], 15, { duration: 0.8 });
+    if (!selectedId) return;
+    const loc = locations.find((l) => l.id === selectedId);
+    if (!loc) return;
+
+    let tries = 0;
+    let raf = 0;
+    const flyWhenReady = () => {
+      const size = map.getSize();
+      if (size.x === 0 || size.y === 0) {
+        // container not laid out yet (e.g. just switched from list view) — wait
+        if (tries++ < 20) {
+          raf = window.requestAnimationFrame(flyWhenReady);
+        }
+        return;
       }
-    }
+      map.invalidateSize();
+      map.flyTo([loc.lat, loc.lng], 15, { duration: 0.8 });
+    };
+    raf = window.requestAnimationFrame(flyWhenReady);
+    return () => window.cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, selectedId]);
 

@@ -226,7 +226,12 @@ export default function AppShell({
                   key={loc.id}
                   loc={loc}
                   lang={lang}
-                  onClick={() => setSelected(loc)}
+                  onClick={() => {
+                    setSelected(loc);
+                    // On mobile the map is hidden in list view — reveal it so the
+                    // user sees the map fly to the place they tapped.
+                    setView('map');
+                  }}
                   userCoords={realUserCoords}
                 />
               ))}
