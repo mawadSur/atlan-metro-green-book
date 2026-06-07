@@ -48,9 +48,6 @@ ruvector.db
 agentdb.rvf
 agentdb.rvf.lock
 
-# stray root lockfile (the real lockfile is web/package-lock.json)
-/package-lock.json
-
 # Firebase secrets
 firebase.config.local.js
 google-services.json
@@ -74,3 +71,4 @@ scripts/py/__pycache__/
 scraped_images/
 scripts/py/.chrome-profile/
 .vercel
+.env
