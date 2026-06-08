@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Match-Day Flyers — Atlan Metro Green Book</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      --brand: #0f766e;        /* teal-700  */
+      --brand-dark: #065f46;   /* emerald-800 */
+      --brand-soft: #ccfbf1;   /* teal-100  */
+      --accent: #ca8a04;       /* amber-600 */
+      --bg: #fafaf9;           /* stone-50  */
+      --surface: #ffffff;
+      --ink: #1c1917;          /* stone-900 */
+      --ink-soft: #57534e;     /* stone-600 */
+      --border: #e7e5e4;       /* stone-200 */
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans Arabic", sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+    .intro {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .intro h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
+    .intro p { margin: 4px 0; opacity: .95; }
+    .intro .note { font-size: 13px; opacity: .85; margin-top: 12px; }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0 0; }
+    .legend span { font-size: 12px; padding: 4px 10px; border-radius: 999px; }
+    .legend .l-place { background: var(--brand-soft); color: var(--brand-dark); }
+    .legend .l-seed  { background: #fef3c7; color: #854d0e; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .tent {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--brand);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .tent--seed { border-top-color: var(--accent); }
+
+    .tent__head { display: flex; align-items: center; justify-content: space-between; }
+    .tent__brand { font-weight: 700; color: var(--brand-dark); font-size: 15px; }
+    .tent__tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+    .tag--place { background: var(--brand-soft); color: var(--brand-dark); }
+    .tag--seed  { background: #fef3c7; color: #854d0e; }
+
+    .tent__benefit-ar {
+      font-size: 20px; font-weight: 700; color: var(--ink); margin: 8px 0 0;
+      font-family: "Noto Sans Arabic", ui-sans-serif, sans-serif;
+    }
+    .tent__benefit-en { font-size: 15px; color: var(--ink-soft); margin: 0; }
+
+    .tent__match { font-size: 22px; font-weight: 700; margin: 10px 0 0; color: var(--brand-dark); }
+    .tent__match-ar { font-size: 16px; color: var(--ink-soft); margin: 0; font-family: "Noto Sans Arabic", ui-sans-serif, sans-serif; }
+
+    .tent__qr {
+      align-self: center;
+      text-align: center;
+      margin: 10px 0;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .tent__qr img { display: block; width: 220px; height: 220px; }
+    .tent__scan { font-size: 13px; color: var(--ink-soft); margin: 8px 0 0; font-weight: 600; }
+
+    .tent__honest {
+      font-size: 13px; color: var(--ink-soft); margin: 4px 0 0;
+      background: var(--brand-soft); padding: 10px 12px; border-radius: 10px;
+    }
+    .tent__honest strong { color: var(--brand-dark); }
+
+    .tent__foot {
+      display: flex; flex-direction: column; gap: 2px;
+      margin-top: auto; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--ink-soft);
+    }
+    .tent__url { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; color: var(--brand); word-break: break-all; }
+
+    /* Print: Letter/A4, one channel per slot, hide screen-only chrome. */
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      body { background: #fff; }
+      .page { padding: 0; max-width: none; }
+      .intro, .legend { display: none; }
+      .grid { gap: 0; grid-template-columns: repeat(2, 1fr); }
+      .tent {
+        border: 1px solid #999;
+        border-radius: 8px;
+        margin: 4mm;
+        box-shadow: none;
+      }
+      .tent--seed { display: none; } /* seed cards are digital, not print collateral */
+      .tent__url { color: #444; }
+    }
+
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <h1>🟢 Match-Day Flyers &amp; Table-Tents</h1>
+      <p dir="rtl" lang="ar" style="font-size:18px;font-weight:700;">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+      <p>Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+      <p class="note">
+        Print this sheet (A4/Letter). Cut along the cards. Fold a card to make a
+        table-tent, or pin it to a board. Each QR is uniquely tagged so we can
+        see which placement drove scans. <strong>SEED cards are hidden in print</strong>
+        — they are the founder's own social posts, kept on-screen for copy/paste.
+      </p>
+      <div class="legend">
+        <span class="l-place">QR · placement = physical scan (cold reach)</span>
+        <span class="l-seed">SEED · social = founder's own posts (self-seeding)</span>
+      </div>
+      <p class="note">Generated 2026-06-08 · base https://atlan-green-book.vercel.app/match/&lt;slug&gt; · campaign wc2026_atl</p>
+    </section>
+
+    <section class="grid">
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Dmosque_alfarooq%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Mosque announcement board (Al-Farooq Masjid)</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Drestaurant_aldente%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Restaurant table-tent</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Dguerrilla_marta%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Guerrilla — fan-zone / MARTA station</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Dseed_whatsapp%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder WhatsApp groups</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Dseed_telegram%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Telegram channels</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Spain vs Saudi Arabia</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">إسبانيا ضد السعودية</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fspain-saudi-arabia%3Futm_source%3Dseed_reddit%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dspain-saudi-arabia" width="220" height="220"
+               alt="QR code linking to Spain vs Saudi Arabia match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Reddit posts</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/spain-saudi-arabia</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Dmosque_alfarooq%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Mosque announcement board (Al-Farooq Masjid)</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Drestaurant_aldente%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Restaurant table-tent</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Dguerrilla_marta%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Guerrilla — fan-zone / MARTA station</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Dseed_whatsapp%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder WhatsApp groups</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Dseed_telegram%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Telegram channels</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Morocco vs Haiti</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">المغرب ضد هايتي</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fmorocco-haiti%3Futm_source%3Dseed_reddit%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dmorocco-haiti" width="220" height="220"
+               alt="QR code linking to Morocco vs Haiti match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Reddit posts</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/morocco-haiti</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Dmosque_alfarooq%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Mosque announcement board (Al-Farooq Masjid)</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Drestaurant_aldente%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Restaurant table-tent</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Dguerrilla_marta%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Guerrilla — fan-zone / MARTA station</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Dseed_whatsapp%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder WhatsApp groups</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Dseed_telegram%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Telegram channels</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">DR Congo vs Uzbekistan</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">الكونغو الديمقراطية ضد أوزبكستان</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fdr-congo-uzbekistan%3Futm_source%3Dseed_reddit%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Ddr-congo-uzbekistan" width="220" height="220"
+               alt="QR code linking to DR Congo vs Uzbekistan match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Reddit posts</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/dr-congo-uzbekistan</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Dmosque_alfarooq%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Mosque announcement board (Al-Farooq Masjid)</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Drestaurant_aldente%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Restaurant table-tent</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+      <article class="tent ">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--place">QR · placement</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Dguerrilla_marta%26utm_medium%3Dqr%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>Guerrilla — fan-zone / MARTA station</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Dseed_whatsapp%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder WhatsApp groups</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Dseed_telegram%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Telegram channels</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+      <article class="tent tent--seed">
+        <header class="tent__head">
+          <span class="tent__brand">🟢 Atlan Metro Green Book</span>
+          <span class="tent__tag tag--seed">SEED · social</span>
+        </header>
+
+        <p class="tent__benefit-ar" dir="rtl" lang="ar">حلال وصلاة بجوار ملعب أتلانتا — خطتك ليوم المباراة.</p>
+        <p class="tent__benefit-en">Halal &amp; prayer near Atlanta Stadium — your match-day plan.</p>
+
+        <h2 class="tent__match">Semifinal — Atlanta</h2>
+        <p class="tent__match-ar" dir="rtl" lang="ar">نصف النهائي — أتلانتا</p>
+
+        <div class="tent__qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=8&amp;data=https%3A%2F%2Fatlan-green-book.vercel.app%2Fmatch%2Fsemifinal-atlanta%3Futm_source%3Dseed_reddit%26utm_medium%3Dsocial%26utm_campaign%3Dwc2026_atl%26utm_content%3Dsemifinal-atlanta" width="220" height="220"
+               alt="QR code linking to Semifinal — Atlanta match-day guide" loading="lazy" />
+          <p class="tent__scan">Scan / امسح الرمز</p>
+        </div>
+
+        <p class="tent__honest">
+          Walkable halal &amp; prayer spots near <strong>Mercedes-Benz Stadium</strong>.
+          No prayer room inside the stadium — we show you the nearest one.
+        </p>
+
+        <footer class="tent__foot">
+          <span>SEED — founder Reddit posts</span>
+          <span class="tent__url">https://atlan-green-book.vercel.app/match/semifinal-atlanta</span>
+        </footer>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

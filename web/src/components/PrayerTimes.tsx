@@ -1,23 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Coordinates, CalculationMethod, PrayerTimes as AdhanPrayerTimes } from 'adhan';
 import { Sunrise, Sun, CloudSun, Sunset, Moon, Clock } from 'lucide-react';
 import type { Lang } from '@/lib/types';
 import { t } from '@/i18n/strings';
+import {
+  computePrayerTimes,
+  nextPrayerName,
+  type ComputedPrayerTimes,
+} from '@/lib/prayer';
 
 interface PrayerTimesProps {
   lang: Lang;
 }
 
 interface LocationState {
-  coords: Coordinates;
+  coords: { lat: number; lng: number };
   usingFallback: boolean;
 }
 
 type PrayerName = 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'none';
 
-const ATLANTA_COORDS = new Coordinates(33.7545, -84.3898);
+const ATLANTA_COORDS = { lat: 33.7545, lng: -84.3898 };
 
 const localeFor = (lang: Lang): string => {
   if (lang === 'ar') return 'ar';
@@ -27,7 +31,7 @@ const localeFor = (lang: Lang): string => {
 
 export default function PrayerTimes({ lang }: PrayerTimesProps) {
   const [location, setLocation] = useState<LocationState | null>(null);
-  const [prayers, setPrayers] = useState<AdhanPrayerTimes | null>(null);
+  const [prayers, setPrayers] = useState<ComputedPrayerTimes | null>(null);
   const [nextPrayer, setNextPrayer] = useState<PrayerName | null>(null);
   const [now, setNow] = useState(new Date());
 
@@ -36,7 +40,7 @@ export default function PrayerTimes({ lang }: PrayerTimesProps) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setLocation({
-            coords: new Coordinates(pos.coords.latitude, pos.coords.longitude),
+            coords: { lat: pos.coords.latitude, lng: pos.coords.longitude },
             usingFallback: false,
           });
         },
@@ -51,20 +55,20 @@ export default function PrayerTimes({ lang }: PrayerTimesProps) {
 
   useEffect(() => {
     if (!location) return;
-    const prayerTimes = new AdhanPrayerTimes(
-      location.coords,
-      new Date(),
-      CalculationMethod.NorthAmerica()
+    const prayerTimes = computePrayerTimes(
+      location.coords.lat,
+      location.coords.lng,
+      new Date()
     );
     setPrayers(prayerTimes);
-    setNextPrayer(prayerTimes.nextPrayer());
+    setNextPrayer(nextPrayerName(prayerTimes));
   }, [location]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setNow(new Date());
       if (prayers) {
-        setNextPrayer(prayers.nextPrayer());
+        setNextPrayer(nextPrayerName(prayers));
       }
     }, 10000); // Update every 10s
     return () => clearInterval(timer);

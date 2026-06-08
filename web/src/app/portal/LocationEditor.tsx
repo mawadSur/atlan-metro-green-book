@@ -6,6 +6,7 @@ import type { Lang } from '@/lib/types';
 import { tp } from '@/i18n/portal';
 import { supabase } from '@/lib/supabase';
 import { signOut } from '@/lib/auth';
+import { revalidateMatchPages } from '@/lib/revalidate';
 import { ClaimForm, ClaimPending } from './ClaimForm';
 
 interface LocationEditorProps {
@@ -175,6 +176,12 @@ export function LocationEditor({ lang, userId, onSignOut }: LocationEditorProps)
 
       setSaveState('saved');
       setTimeout(() => setSaveState('idle'), 2000);
+
+      // Offer freshness: push the just-saved offer to the /match/[slug] pages
+      // now, instead of waiting for the next time-based ISR cycle. This is a
+      // server-only operation (revalidatePath), so it runs via a Server Action.
+      // Fire-and-handle: never block or fail the success UI on it.
+      revalidateMatchPages().catch(() => {});
     } catch {
       setSaveState('error');
       setTimeout(() => setSaveState('idle'), 3000);

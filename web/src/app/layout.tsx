@@ -15,6 +15,12 @@ const notoArabic = Noto_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
+  // Absolute base for OG/Twitter image URLs (e.g. the per-match share cards).
+  // Without this, Next falls back to http://localhost:3000 and share previews
+  // break in production. Override via NEXT_PUBLIC_SITE_URL for preview deploys.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://atlan-green-book.vercel.app"
+  ),
   title: "Atlan Metro Green Book — Muslim-Friendly Places in Atlanta",
   description:
     "Find mosques, halal restaurants, markets and family attractions across Metro Atlanta. Bilingual English / العربية / Español. Built for the FIFA World Cup 2026.",

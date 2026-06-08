@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { Tag } from 'lucide-react';
 import type { Location, Lang } from '@/lib/types';
 import { typeStyle, localized, typeLabel, halalLabel } from '@/lib/display';
@@ -13,17 +14,41 @@ interface LocationCardProps {
   lang: Lang;
   onClick: () => void;
   userCoords?: Coordinates | null;
+  /**
+   * Optional pre-formatted distance/transit label (e.g. '~11-13 min walk').
+   * When provided it overrides the geolocation-derived distance — used by the
+   * match page to show HONEST curated walk/transit times instead of a live
+   * haversine from the user. Pair with `distanceIcon` so color is never the
+   * only signal.
+   */
+  distanceLabel?: string;
+  /** Optional lucide icon element rendered before `distanceLabel`. */
+  distanceIcon?: ReactNode;
+  /**
+   * Optional editorial note line (e.g. provenance / alcohol / vegan caveat).
+   * Rendered under the address; redundant text so meaning never relies on color.
+   */
+  note?: string;
 }
 
-export default function LocationCard({ loc, lang, onClick, userCoords }: LocationCardProps) {
+export default function LocationCard({
+  loc,
+  lang,
+  onClick,
+  userCoords,
+  distanceLabel,
+  distanceIcon,
+  note,
+}: LocationCardProps) {
   const style = typeStyle(loc.type);
   const name = localized(loc, 'name', lang);
   const halal = halalLabel(loc, lang);
 
-  // Calculate distance if user coords available
-  const distance = userCoords
-    ? haversineDistance(userCoords, { lat: loc.lat, lng: loc.lng })
-    : null;
+  // An explicit curated label wins over a live geolocation distance.
+  const distance =
+    !distanceLabel && userCoords
+      ? haversineDistance(userCoords, { lat: loc.lat, lng: loc.lng })
+      : null;
 
   return (
     <button
@@ -57,11 +82,19 @@ export default function LocationCard({ loc, lang, onClick, userCoords }: Locatio
 
         <div className="space-y-1">
           <p className="text-sm text-stone-500 truncate">{loc.address}</p>
-          {distance && (
-            <p className="text-xs text-stone-400">
-              {formatDistance(distance, lang)} {t.away[lang]}
+          {distanceLabel ? (
+            <p className="text-xs text-stone-600 flex items-center gap-1">
+              {distanceIcon}
+              <span>{distanceLabel}</span>
             </p>
+          ) : (
+            distance && (
+              <p className="text-xs text-stone-400">
+                {formatDistance(distance, lang)} {t.away[lang]}
+              </p>
+            )
           )}
+          {note && <p className="text-xs text-stone-500">{note}</p>}
         </div>
 
         {(halal.tone !== 'none' || loc.prayer_space || loc.alcohol_free || loc.family_friendly) && (
