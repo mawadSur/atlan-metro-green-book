@@ -10,6 +10,7 @@ import { tp } from '@/i18n/portal';
 import { getSession, onAuthChange } from '@/lib/auth';
 import { LoginForm } from './LoginForm';
 import { LocationEditor } from './LocationEditor';
+import { ResetPasswordForm } from './ResetPasswordForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,7 @@ function PortalInner() {
 
   const [session, setSession] = useState<{ userId: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
     async function checkSession() {
@@ -47,7 +49,11 @@ function PortalInner() {
 
     checkSession();
 
-    const unsubscribe = onAuthChange((_event, session) => {
+    const unsubscribe = onAuthChange((event, session) => {
+      // User followed the reset-password email link: prompt them to set a new one.
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecovery(true);
+      }
       if (session?.user) {
         setSession({ userId: session.user.id, email: session.user.email ?? '' });
       } else {
@@ -80,7 +86,9 @@ function PortalInner() {
           <h1 className="text-2xl font-bold text-stone-900">{tp.portal_title[lang]}</h1>
         </header>
 
-        {session ? (
+        {recovery && session ? (
+          <ResetPasswordForm lang={lang} onDone={() => setRecovery(false)} />
+        ) : session ? (
           <LocationEditor
             lang={lang}
             userId={session.userId}

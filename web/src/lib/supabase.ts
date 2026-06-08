@@ -4,8 +4,18 @@ import type { City, Location, LocationType } from './types';
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+// In the browser we want the authenticated portal session to survive reloads
+// (persist + auto-refresh). During SSR / build there is no `window` and no
+// localStorage, so we fall back to a non-persistent, in-memory session to avoid
+// crashing. The public read functions below (getLocations etc.) work either way.
+const hasWindow = typeof window !== 'undefined';
+
 export const supabase = createClient(url, anon, {
-  auth: { persistSession: false },
+  auth: {
+    persistSession: hasWindow,
+    autoRefreshToken: hasWindow,
+    detectSessionInUrl: hasWindow,
+  },
 });
 
 export interface LocationQueryOptions {

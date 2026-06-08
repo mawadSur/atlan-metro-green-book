@@ -5,6 +5,7 @@ import { Eye, EyeOff, LogIn } from 'lucide-react';
 import type { Lang } from '@/lib/types';
 import { tp } from '@/i18n/portal';
 import { signIn } from '@/lib/auth';
+import { ForgotPasswordForm } from './ForgotPasswordForm';
 
 interface LoginFormProps {
   lang: Lang;
@@ -17,6 +18,11 @@ export function LoginForm({ lang, onSignedIn }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [forgot, setForgot] = useState(false);
+
+  if (forgot) {
+    return <ForgotPasswordForm lang={lang} onBack={() => setForgot(false)} />;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,6 +95,13 @@ export function LoginForm({ lang, onSignedIn }: LoginFormProps) {
               {tp.signIn[lang]}
             </>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setForgot(true)}
+          className="w-full text-center text-sm text-stone-600 hover:text-teal-700 focus:outline-none focus-visible:ring-2 ring-teal-600 rounded transition-colors motion-safe:duration-150"
+        >
+          {tp.forgotPassword[lang]}
         </button>
       </form>
 

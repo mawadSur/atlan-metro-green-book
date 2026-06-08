@@ -15,6 +15,26 @@ export async function signOut() {
   if (error) throw error;
 }
 
+/**
+ * Send a password-reset email. The link returns the user to the portal where
+ * they can set a new password via updatePassword(). Safe to call from the
+ * browser; uses window.location.origin so the redirect matches the live host.
+ */
+export async function requestPasswordReset(email: string) {
+  const redirectTo =
+    typeof window !== 'undefined' ? `${window.location.origin}/portal` : undefined;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  if (error) throw error;
+}
+
+/**
+ * Set a new password for the currently authenticated (recovery) session.
+ */
+export async function updatePassword(newPassword: string) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}
+
 export async function getSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw error;
