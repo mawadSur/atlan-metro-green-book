@@ -1,15 +1,30 @@
 'use client';
 
-import { Trophy } from 'lucide-react';
+import Link from 'next/link';
+import { Trophy, CalendarDays } from 'lucide-react';
 import type { Lang } from '@/lib/types';
 import { tp } from '@/i18n/portal';
+import { MATCHES } from '@/lib/matches';
 
 interface WorldCupBannerProps {
   lang: Lang;
   onExplore?: () => void;
 }
 
+/**
+ * The next upcoming match by kickoff, or the last one once they've all passed,
+ * so the "Match-day plans" link always points somewhere live. Kickoff strings
+ * carry the venue offset; a stale pick near midnight is harmless for a
+ * discovery link.
+ */
+function pickMatchSlug(): string {
+  const now = Date.now();
+  const upcoming = MATCHES.find((mt) => new Date(mt.kickoff).getTime() >= now);
+  return (upcoming ?? MATCHES[MATCHES.length - 1]).slug;
+}
+
 export default function WorldCupBanner({ lang, onExplore }: WorldCupBannerProps) {
+  const matchSlug = pickMatchSlug();
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-600 via-emerald-600 to-teal-700 p-6 text-white shadow-lg">
       {/* Decorative background elements */}
@@ -31,15 +46,24 @@ export default function WorldCupBanner({ lang, onExplore }: WorldCupBannerProps)
           {tp.wc_subtitle[lang]}
         </p>
 
-        {onExplore && (
-          <button
-            onClick={onExplore}
-            className="inline-flex items-center gap-2 bg-white text-emerald-700 px-5 py-3 rounded-xl font-semibold text-sm min-h-[44px] cursor-pointer hover:bg-amber-50 focus-visible:ring-2 focus-visible:ring-white active:scale-[0.98] motion-safe:transition-all motion-safe:duration-200 shadow-md"
+        <div className="flex flex-wrap gap-2">
+          {onExplore && (
+            <button
+              onClick={onExplore}
+              className="inline-flex items-center gap-2 bg-white text-emerald-700 px-5 py-3 rounded-xl font-semibold text-sm min-h-[44px] cursor-pointer hover:bg-amber-50 focus-visible:ring-2 focus-visible:ring-white active:scale-[0.98] motion-safe:transition-all motion-safe:duration-200 shadow-md"
+            >
+              <Trophy size={18} />
+              <span>{tp.wc_explore[lang]}</span>
+            </button>
+          )}
+          <Link
+            href={`/match/${matchSlug}`}
+            className="inline-flex items-center gap-2 bg-white/15 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[44px] cursor-pointer hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-[0.98] motion-safe:transition-all motion-safe:duration-200 ring-1 ring-white/40"
           >
-            <Trophy size={18} />
-            <span>{tp.wc_explore[lang]}</span>
-          </button>
-        )}
+            <CalendarDays size={18} aria-hidden="true" />
+            <span>{tp.wc_match_plans[lang]}</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -6,8 +6,8 @@
 // cannot know. We read it via useSyncExternalStore with a `getServerSnapshot`
 // that always returns `false`, so the server HTML and the first client render
 // agree (both render the empty heart). After hydration the store snapshot
-// updates to the real value. A module-level listener set lets sibling toggles
-// re-render in sync when any of them changes the list.
+// updates to the real value. The shared savedStore lets sibling hearts AND the
+// "Share my plan" button re-render in sync when any of them changes the list.
 
 import { useSyncExternalStore, useCallback } from 'react';
 import { Heart } from 'lucide-react';
@@ -15,29 +15,12 @@ import type { Lang } from '@/lib/types';
 import { m } from '@/i18n/match';
 import { getSaved, toggleSaved } from '@/lib/saveList';
 import { trackEvent } from '@/lib/analytics';
+import { subscribeSaved, emitSavedChange } from './savedStore';
 
 interface SaveToggleProps {
   placeId: string;
   slug: string;
   lang: Lang;
-}
-
-// --- tiny external store over localStorage --------------------------------
-const listeners = new Set<() => void>();
-
-function emit() {
-  for (const l of listeners) l();
-}
-
-function subscribe(cb: () => void): () => void {
-  listeners.add(cb);
-  // Cross-tab changes also refresh the snapshot.
-  const onStorage = () => emit();
-  if (typeof window !== 'undefined') window.addEventListener('storage', onStorage);
-  return () => {
-    listeners.delete(cb);
-    if (typeof window !== 'undefined') window.removeEventListener('storage', onStorage);
-  };
 }
 
 function snapshotFor(id: string): boolean {
@@ -47,12 +30,12 @@ function snapshotFor(id: string): boolean {
 export default function SaveToggle({ placeId, slug, lang }: SaveToggleProps) {
   const getSnapshot = useCallback(() => snapshotFor(placeId), [placeId]);
   // Server snapshot: never saved → matches the empty-heart server HTML.
-  const saved = useSyncExternalStore(subscribe, getSnapshot, () => false);
+  const saved = useSyncExternalStore(subscribeSaved, getSnapshot, () => false);
 
   const onToggle = useCallback(() => {
     toggleSaved(placeId);
     trackEvent('save_toggle', { match: slug, saved: !saved });
-    emit();
+    emitSavedChange();
   }, [placeId, slug, saved]);
 
   const label = saved ? m.saved[lang] : m.save[lang];

@@ -12,19 +12,22 @@
 // mismatch). All layout uses logical-property classes (ms-/me-/ps-/pe-/start-/
 // end-) so the RTL flip needs no per-element overrides.
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Check, MapPinned, AlertTriangle, ArrowLeft } from 'lucide-react';
 import type { Lang } from '@/lib/types';
 import { LANGS, t } from '@/i18n/strings';
 import { localized } from '@/lib/display';
 import { m } from '@/i18n/match';
+import { trackEvent } from '@/lib/analytics';
 import type { MatchVM } from './viewModel';
 import { sp, fill } from './matchText';
+import { useUtmSource } from './useClient';
 import MatchLang from './MatchLang';
 import SpotCard from './SpotCard';
 import PrayerCountdown from './PrayerCountdown';
 import ShareButton from './ShareButton';
+import SharePlanButton from './SharePlanButton';
 import EmailCapture from './EmailCapture';
 
 export interface TeamLabels {
@@ -48,6 +51,19 @@ function prayerLabel(key: MatchVM['prayer']['key'], lang: Lang): string {
 export default function MatchPlan({ vm, teams }: MatchPlanProps) {
   const [lang, setLang] = useState<Lang>('en');
   const dir = LANGS.find((l) => l.code === lang)?.dir ?? 'ltr';
+
+  // Fire one page-view event per visit carrying the UTM source, so the funnel
+  // can separate the founder's own seed posts (utm_source=seed_*) from organic
+  // re-share clicks — the metric the Jun 22 go/no-go gate depends on. Vercel
+  // Analytics already records the raw visit + referrer; this tags it with the
+  // source we control. `organic` = no UTM (a re-share or a direct hit).
+  const utmSource = useUtmSource();
+  const viewTracked = useRef(false);
+  useEffect(() => {
+    if (viewTracked.current) return;
+    viewTracked.current = true;
+    trackEvent('match_view', { match: vm.slug, utm_source: utmSource || 'organic' });
+  }, [vm.slug, utmSource]);
 
   const homeName = teams.home.name[lang];
   const awayName = teams.away.name[lang];
@@ -169,12 +185,14 @@ export default function MatchPlan({ vm, teams }: MatchPlanProps) {
 
         {/* 6. Share + email capture (after the value). */}
         <section className="space-y-4 pt-2">
-          <div className="flex justify-center">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <ShareButton
               slug={vm.slug}
               lang={lang}
               shareText={fill(sp.share_text[lang], { match: matchTitle })}
             />
+            {/* Second viral surface — only appears once ≥1 spot is saved. */}
+            <SharePlanButton slug={vm.slug} lang={lang} utmSource={utmSource} />
           </div>
           <EmailCapture slug={vm.slug} lang={lang} />
         </section>

@@ -87,6 +87,27 @@ export async function getLocationCount(
   return count ?? 0;
 }
 
+/**
+ * Fetch specific locations by id (for the shared "My plan" view). Returns rows
+ * in the SAME order as the requested ids, silently dropping ids that don't
+ * resolve (a stale/edited shared link shouldn't error). Capped at 25 ids to
+ * match the save-list cap and bound the query.
+ */
+export async function getLocationsByIds(ids: string[]): Promise<Location[]> {
+  const wanted = (Array.isArray(ids) ? ids : []).slice(0, 25);
+  if (wanted.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*')
+    .in('id', wanted);
+  if (error) throw error;
+
+  // Preserve the saved order (Postgres `in` returns arbitrary order).
+  const byId = new Map((data ?? []).map((l) => [l.id, l as Location]));
+  return wanted.map((id) => byId.get(id)).filter((l): l is Location => Boolean(l));
+}
+
 export async function getCity(cityId = 'atlanta'): Promise<City | null> {
   const { data, error } = await supabase
     .from('cities')

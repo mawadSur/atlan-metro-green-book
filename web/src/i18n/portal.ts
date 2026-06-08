@@ -15,11 +15,17 @@ export const tp: Record<string, Dict> = {
   // World Cup
   wc_title: { en: 'FIFA World Cup 2026', ar: 'كأس العالم ٢٠٢٦', es: 'Copa Mundial 2026' },
   wc_subtitle: {
-    en: 'Prayer rooms, wudu & halal food at the stadium',
-    ar: 'غرف الصلاة والوضوء والطعام الحلال في الملعب',
-    es: 'Salas de oración, wudu y comida halal en el estadio',
+    // Honest framing: the stadium has no prayer room — we point to the nearest.
+    en: 'Halal food + prayer near Mercedes-Benz Stadium, by match day',
+    ar: 'طعام حلال وصلاة قرب ملعب مرسيدس-بنز، حسب يوم المباراة',
+    es: 'Comida halal y oración cerca del Estadio Mercedes-Benz, por día de partido',
   },
   wc_explore: { en: 'Explore Green Zone', ar: 'استكشف المنطقة الخضراء', es: 'Explorar Zona Verde' },
+  wc_match_plans: {
+    en: 'Match-day plans',
+    ar: 'خطط يوم المباراة',
+    es: 'Planes del día del partido',
+  },
 
   // Portal — auth
   portal_title: { en: 'Business Portal', ar: 'بوابة الأعمال', es: 'Portal de Negocios' },
