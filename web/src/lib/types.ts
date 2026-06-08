@@ -62,3 +62,37 @@ export interface Filters {
   prayer_space: boolean;
   family_friendly: boolean;
 }
+
+// Admin / business portal — roles, claims, and audit logging.
+
+export type Role = 'user' | 'business' | 'admin';
+
+export type ClaimStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Profile {
+  id: string;
+  email: string | null;
+  role: Role;
+  created_at: string;
+}
+
+export interface ClaimRequest {
+  id: string;
+  requester_uid: string;
+  location_id: string;
+  status: ClaimStatus;
+  note: string | null;
+  created_at: string;
+  decided_by: string | null;
+  decided_at: string | null;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  actor_uid: string | null;
+  action: string;
+  target_type: string | null;
+  target_id: string | null;
+  detail: Record<string, unknown> | null;
+  created_at: string;
+}
