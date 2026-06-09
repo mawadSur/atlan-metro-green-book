@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,14 +6,34 @@ import {
   ScrollView,
   Pressable,
   Linking,
+  Switch,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLang } from '../../src/lib/LangContext';
+import { usePushOptIn } from '../../src/lib/usePushOptIn';
 import { t, LANGS } from '../../src/i18n/strings';
 import { colors, spacing } from '../../src/theme/colors';
 
 export default function MoreScreen() {
   const { lang, setLang } = useLang();
+  const push = usePushOptIn();
+  const [pushNote, setPushNote] = useState<string | null>(null);
+
+  // Surface the reason an enable attempt failed (denied / unsupported / error),
+  // and clear any stale note once the toggle settles into the on state.
+  useEffect(() => {
+    if (!push.lastError) {
+      if (push.enabled) setPushNote(null);
+      return;
+    }
+    const noteByReason = {
+      denied: t.notificationsDenied[lang],
+      unsupported: t.notificationsUnsupported[lang],
+      error: t.notificationsError[lang],
+    };
+    setPushNote(noteByReason[push.lastError]);
+  }, [push.lastError, push.enabled, lang]);
 
   const handleOpenPortal = () => {
     Linking.openURL('https://atlan-green-book.vercel.app/portal');
@@ -46,6 +66,29 @@ export default function MoreScreen() {
             )}
           </Pressable>
         ))}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t.notifications[lang]}</Text>
+        <View style={styles.notifyRow}>
+          <View style={styles.notifyLabel}>
+            <Text style={styles.optionText}>{t.notificationsToggle[lang]}</Text>
+          </View>
+          {push.busy ? (
+            <ActivityIndicator color={colors.brand} />
+          ) : (
+            <Switch
+              value={push.enabled}
+              onValueChange={(next) => {
+                void push.toggle(next);
+              }}
+              trackColor={{ false: colors.border, true: colors.brand }}
+              thumbColor={colors.surface}
+            />
+          )}
+        </View>
+        <Text style={styles.notifyHint}>{t.notificationsHint[lang]}</Text>
+        {pushNote && <Text style={styles.notifyNote}>{pushNote}</Text>}
       </View>
 
       <View style={styles.section}>
@@ -144,6 +187,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: colors.inkSoft,
+  },
+  notifyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    minHeight: 56,
+  },
+  notifyLabel: {
+    flex: 1,
+    marginEnd: spacing.md,
+  },
+  notifyHint: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.inkSoft,
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  notifyNote: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.accent,
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.xs,
   },
   worldCupCard: {
     backgroundColor: colors.surface,
