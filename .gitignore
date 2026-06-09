@@ -54,6 +54,10 @@ google-services.json
 GoogleService-Info.plist
 .secrets/
 
+# EAS submit credentials (Google Play service account JSON — never commit)
+google-play-service-account.json
+*-service-account.json
+
 # Next.js web app
 web/node_modules/
 web/.next/

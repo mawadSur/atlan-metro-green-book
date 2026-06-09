@@ -18,6 +18,16 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "FILL_ME_apple_id_email",
+        "ascAppId": "FILL_ME_app_store_connect_app_id",
+        "appleTeamId": "FILL_ME_apple_team_id"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "internal"
+      }
+    }
   }
 }
