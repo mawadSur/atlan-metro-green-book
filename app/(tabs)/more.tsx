@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useLang } from '../../src/lib/LangContext';
 import { usePushOptIn } from '../../src/lib/usePushOptIn';
+import { sendLocalTest } from '../../src/lib/push';
 import { t, LANGS } from '../../src/i18n/strings';
 import { colors, spacing } from '../../src/theme/colors';
 
@@ -89,6 +90,18 @@ export default function MoreScreen() {
         </View>
         <Text style={styles.notifyHint}>{t.notificationsHint[lang]}</Text>
         {pushNote && <Text style={styles.notifyNote}>{pushNote}</Text>}
+        {__DEV__ && (
+          <Pressable
+            onPress={() => sendLocalTest()}
+            style={({ pressed }) => [
+              styles.devTestButton,
+              pressed && styles.optionPressed,
+            ]}
+          >
+            <Ionicons name="flask-outline" size={18} color={colors.inkSoft} />
+            <Text style={styles.devTestText}>Send test notification (dev)</Text>
+          </Pressable>
+        )}
       </View>
 
       <View style={styles.section}>
@@ -217,6 +230,24 @@ const styles = StyleSheet.create({
     color: colors.accent,
     marginTop: spacing.sm,
     paddingHorizontal: spacing.xs,
+  },
+  devTestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
+    alignSelf: 'flex-start',
+  },
+  devTestText: {
+    fontSize: 13,
+    color: colors.inkSoft,
+    fontWeight: '500',
   },
   worldCupCard: {
     backgroundColor: colors.surface,

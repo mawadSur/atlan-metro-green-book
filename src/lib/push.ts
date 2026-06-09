@@ -149,6 +149,51 @@ export async function disablePush(): Promise<void> {
 }
 
 /**
+ * DEV-only: schedule a local notification (no server, no push creds) to verify
+ * the notification handler, Android channel, and tap→deep-link routing end to
+ * end on-device. Also logs this device's Expo push token so you can copy it
+ * into `scripts/send-push.mjs` to test the real remote-delivery leg. Returns
+ * the token (or null if unavailable / not a physical device).
+ */
+export async function sendLocalTest(): Promise<string | null> {
+  try {
+    await configureNotifications();
+
+    // Ensure we at least have permission to display it.
+    const perms = await Notifications.getPermissionsAsync();
+    if (!perms.granted) {
+      const req = await Notifications.requestPermissionsAsync();
+      if (!req.granted) return null;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Test notification',
+        body: 'Tap me — I should deep-link to the Spain vs Saudi match.',
+        data: { url: '/match/spain-saudi-arabia' },
+      },
+      trigger: { seconds: 2 } as Notifications.TimeIntervalTriggerInput,
+    });
+
+    let token: string | null = null;
+    if (Device.isDevice) {
+      const projectId = getProjectId();
+      const resp = await Notifications.getExpoPushTokenAsync(
+        projectId ? { projectId } : undefined
+      );
+      token = resp.data;
+      console.log('[push] this device Expo token:', token);
+    } else {
+      console.log('[push] simulator — no remote push token available');
+    }
+    return token;
+  } catch (err) {
+    console.warn('sendLocalTest failed:', err);
+    return null;
+  }
+}
+
+/**
  * If the user previously opted in, silently refresh their token + language on
  * launch (tokens can rotate, and the user may have switched app language).
  * No permission prompt is shown — we only re-register an already-granted token.
