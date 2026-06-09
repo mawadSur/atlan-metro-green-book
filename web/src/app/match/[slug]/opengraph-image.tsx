@@ -7,15 +7,13 @@
 //      embedded Noto Sans Arabic font so Satori shapes the script correctly.
 //   3. Teams + kickoff (America/New_York) + a green ✓ "Verified" mark on the bottom row.
 //
-// Build-safety: the Arabic + Latin fonts are fetched at render time. If EITHER fetch
-// fails we fall back to an English-only card; if even that throws we render a
-// no-fonts ASCII card. A working card always beats a broken Arabic one — but the
-// /match PAGE stays Arabic-first regardless (this fallback is card-only).
+// Build-safety: the Arabic + Latin fonts are vendored locally (no network fetch),
+// so builds are deterministic and offline-safe. Every card ships with both fonts.
 //
 // Next 16 notes (read node_modules/next/dist/docs/.../opengraph-image.md):
 //   - `params` is now a Promise (v16.0.0) — must be awaited.
 //   - next/og dropped the edge default; this route uses the Node runtime so it can
-//     fetch fonts over the network at build time.
+//     read fonts from disk at build time.
 //   - generateStaticParams + dynamicParams=false => only the 4 known slugs render
 //     (others 404), so all cards are pre-rendered at build time.
 //
@@ -24,6 +22,8 @@
 // undefined cmap) UNLESS the Latin font is listed FIRST. Order is load-bearing.
 
 import { ImageResponse } from 'next/og';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { MATCHES, getMatch, type Match, type MatchTeam } from '@/lib/matches';
 
 export const runtime = 'nodejs';
@@ -45,18 +45,16 @@ const AMBER = '#ca8a04';
 const ARABIC_HEADLINE = 'حلال موثّق ومصلّى قرب الملعب';
 const ENGLISH_HEADLINE = 'Verified halal + prayer near Atlanta Stadium';
 
-// Stable static TTFs (hinted Noto from the googlefonts/noto-fonts repo). ttf/otf are
+// Vendored TTFs (hinted Noto from the googlefonts/noto-fonts repo). ttf/otf are
 // preferred over woff for Satori parse speed. Bold weights for thumbnail legibility.
-const FONT_ARABIC_URL =
-  'https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansArabic/NotoSansArabic-Bold.ttf';
-const FONT_LATIN_URL =
-  'https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans/NotoSans-Bold.ttf';
-
-async function fetchFont(url: string): Promise<ArrayBuffer> {
-  const res = await fetch(url, { redirect: 'follow' });
-  if (!res.ok) throw new Error(`font fetch ${res.status} for ${url}`);
-  return res.arrayBuffer();
-}
+// Loaded from disk at build time for deterministic, offline-safe builds.
+// Path is relative to web/ directory (process.cwd() during Next.js build).
+const FONT_LATIN = readFileSync(
+  join(process.cwd(), 'src/app/match/[slug]/_fonts/NotoSans-Bold.ttf')
+);
+const FONT_ARABIC = readFileSync(
+  join(process.cwd(), 'src/app/match/[slug]/_fonts/NotoSansArabic-Bold.ttf')
+);
 
 /** "Sun, Jun 21 • 12:00 PM ET" in America/New_York, regardless of build host TZ. */
 function formatKickoff(m: Match): string {
@@ -250,30 +248,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   // dynamicParams=false guarantees slug is one of the four, but guard anyway.
   const match = getMatch(slug) ?? MATCHES[0];
 
-  // Tier 1: Arabic-first card with both fonts embedded (Latin FIRST — see header note).
-  try {
-    const [latin, arabic] = await Promise.all([
-      fetchFont(FONT_LATIN_URL),
-      fetchFont(FONT_ARABIC_URL),
-    ]);
-    return new ImageResponse(<ArabicCard m={match} />, {
-      ...size,
-      fonts: [
-        { name: 'NotoLatin', data: latin, weight: 700, style: 'normal' },
-        { name: 'NotoArabic', data: arabic, weight: 700, style: 'normal' },
-      ],
-    });
-  } catch {
-    // Tier 2: Latin font only -> English-only card.
-    try {
-      const latin = await fetchFont(FONT_LATIN_URL);
-      return new ImageResponse(<EnglishCard m={match} />, {
-        ...size,
-        fonts: [{ name: 'NotoLatin', data: latin, weight: 700, style: 'normal' }],
-      });
-    } catch {
-      // Tier 3: no fetched fonts at all -> Satori's built-in font. Always succeeds.
-      return new ImageResponse(<EnglishCard m={match} />, { ...size });
-    }
-  }
+  // Arabic-first card with both fonts embedded (Latin FIRST — see header note).
+  // Fonts are vendored locally, so no network fetch or fallback tiers needed.
+  return new ImageResponse(<ArabicCard m={match} />, {
+    ...size,
+    fonts: [
+      { name: 'NotoLatin', data: FONT_LATIN, weight: 700, style: 'normal' },
+      { name: 'NotoArabic', data: FONT_ARABIC, weight: 700, style: 'normal' },
+    ],
+  });
 }
