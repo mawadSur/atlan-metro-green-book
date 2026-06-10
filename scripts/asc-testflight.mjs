@@ -131,6 +131,14 @@ async function addBuildToGroup(groupId, buildId, nowSec) {
   }, nowSec);
 }
 
+// Expire a build so testers can no longer install it (used to retire a bad
+// build once a fixed one is live).
+async function expireBuild(buildId, nowSec) {
+  return asc('PATCH', `/builds/${buildId}`, {
+    data: { type: 'builds', id: buildId, attributes: { expired: true } },
+  }, nowSec);
+}
+
 async function testerStatus(email, nowSec) {
   const r = await asc(
     'GET',
@@ -164,6 +172,11 @@ try {
     if (!groupId || !buildId) throw new Error('usage: add-build <groupId> <buildId>');
     await addBuildToGroup(groupId, buildId, nowSec);
     console.log('✓ build', buildId, 'added to group', groupId);
+  } else if (cmd === 'expire-build') {
+    const [buildId] = rest;
+    if (!buildId) throw new Error('usage: expire-build <buildId>');
+    await expireBuild(buildId, nowSec);
+    console.log('✓ build', buildId, 'expired');
   } else if (cmd === 'tester-status') {
     console.log(JSON.stringify(await testerStatus(rest[0], nowSec), null, 2));
   } else {
