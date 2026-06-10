@@ -3,9 +3,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import type { City, Location, LocationType } from './types';
 
-// Native uses EXPO_PUBLIC_* env vars (set in .env), not NEXT_PUBLIC_*.
-const url = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const anon = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+// Native uses EXPO_PUBLIC_* env vars (set in .env locally; pushed to the EAS
+// "production" environment for release builds via `eas env:push`). These are
+// inlined into the JS bundle at build time.
+const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const anon = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// Fail loud, not cryptic. If a build ships without these (e.g. env vars not set
+// in the EAS environment), createClient(undefined, …) used to throw at module
+// load and crash the app on launch with no useful message. Surface the real
+// cause instead so it's debuggable from the crash log.
+if (!url || !anon) {
+  throw new Error(
+    'Supabase env vars missing: set EXPO_PUBLIC_SUPABASE_URL and ' +
+      'EXPO_PUBLIC_SUPABASE_ANON_KEY (locally in .env; for builds run ' +
+      '`eas env:push <environment> --path .env`).'
+  );
+}
 
 export const supabase = createClient(url, anon, {
   auth: {
