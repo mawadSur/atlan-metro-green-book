@@ -131,6 +131,42 @@ async function addBuildToGroup(groupId, buildId, nowSec) {
   }, nowSec);
 }
 
+// Read the editable app-info localizations (the App Store listing name lives
+// in appInfoLocalizations.name, per-locale, on the editable appInfo).
+async function getAppInfoLocalizations(nowSec) {
+  const infos = await asc('GET', `/apps/${APP_ID}/appInfos?include=appInfoLocalizations`, null, nowSec);
+  // Pick the editable appInfo (one whose store state allows edits).
+  const editableStates = [
+    'PREPARE_FOR_SUBMISSION', 'DEVELOPER_REJECTED', 'REJECTED',
+    'METADATA_REJECTED', 'WAITING_FOR_REVIEW', 'INVALID_BINARY',
+  ];
+  const info =
+    (infos.data || []).find((i) => editableStates.includes(i.attributes.appStoreState)) ||
+    (infos.data || [])[0];
+  const locs = (infos.included || []).filter(
+    (x) => x.type === 'appInfoLocalizations' &&
+      info?.relationships?.appInfoLocalizations?.data?.some((d) => d.id === x.id)
+  );
+  return {
+    appInfoId: info?.id,
+    appStoreState: info?.attributes?.appStoreState,
+    localizations: locs.map((l) => ({ id: l.id, locale: l.attributes.locale, name: l.attributes.name })),
+  };
+}
+
+// Set the App Store listing name on every editable locale.
+async function setAppName(name, nowSec) {
+  const { localizations } = await getAppInfoLocalizations(nowSec);
+  const results = [];
+  for (const loc of localizations) {
+    const r = await asc('PATCH', `/appInfoLocalizations/${loc.id}`, {
+      data: { type: 'appInfoLocalizations', id: loc.id, attributes: { name } },
+    }, nowSec);
+    results.push({ locale: loc.locale, name: r.data?.attributes?.name });
+  }
+  return results;
+}
+
 // Expire a build so testers can no longer install it (used to retire a bad
 // build once a fixed one is live).
 async function expireBuild(buildId, nowSec) {
@@ -172,6 +208,13 @@ try {
     if (!groupId || !buildId) throw new Error('usage: add-build <groupId> <buildId>');
     await addBuildToGroup(groupId, buildId, nowSec);
     console.log('✓ build', buildId, 'added to group', groupId);
+  } else if (cmd === 'app-name') {
+    console.log(JSON.stringify(await getAppInfoLocalizations(nowSec), null, 2));
+  } else if (cmd === 'set-app-name') {
+    const name = rest.join(' ').trim();
+    if (!name) throw new Error('usage: set-app-name <name>');
+    const r = await setAppName(name, nowSec);
+    console.log('✓ listing name set:', JSON.stringify(r));
   } else if (cmd === 'expire-build') {
     const [buildId] = rest;
     if (!buildId) throw new Error('usage: expire-build <buildId>');
