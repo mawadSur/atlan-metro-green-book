@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Linking } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import { LangProvider, useLang } from '../src/lib/LangContext';
 import { FavoritesProvider } from '../src/lib/useFavorites';
@@ -68,7 +68,7 @@ function NotificationsBridge() {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <LangProvider>
         <FavoritesProvider>
           <NotificationsBridge />

@@ -20,7 +20,7 @@ export function HalalBadge({ location, lang }: HalalBadgeProps) {
     const verifier = verified_by || 'certifier';
     const text =
       lang === 'ar'
-        ? `حلال - تم التحقق من قبل ${verifier}`
+        ? `حلال — تم التحقق من قبل ${verifier}`
         : lang === 'es'
         ? `Halal — verificado por ${verifier}`
         : `Halal — verified by ${verifier}`;

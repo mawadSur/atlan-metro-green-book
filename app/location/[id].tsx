@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
 import { useLang } from '../../src/lib/LangContext';
@@ -71,20 +71,26 @@ export default function LocationDetailScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0f766e" />
-      </View>
+      <>
+        <Stack.Screen options={{ title: '' }} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0f766e" />
+        </View>
+      </>
     );
   }
 
   if (!location) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{t.errorLoadingPlaces[lang]}</Text>
-        <Pressable style={styles.closeButton} onPress={() => router.back()}>
-          <Text style={styles.closeButtonText}>{t.close[lang]}</Text>
-        </Pressable>
-      </View>
+      <>
+        <Stack.Screen options={{ title: '' }} />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{t.errorLoadingPlaces[lang]}</Text>
+          <Pressable style={styles.closeButton} onPress={() => router.back()}>
+            <Text style={styles.closeButtonText}>{t.close[lang]}</Text>
+          </Pressable>
+        </View>
+      </>
     );
   }
 
@@ -95,6 +101,7 @@ export default function LocationDetailScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ title: name }} />
       <ScrollView style={styles.scrollView}>
         {/* Hero Image */}
         <View style={styles.heroContainer}>

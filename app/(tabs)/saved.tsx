@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -53,6 +53,7 @@ export default function SavedScreen() {
   const { favorites, savedLocations, isLoading: favoritesLoading } = useFavorites();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const hasLoaded = useRef(false);
 
   // Re-fetch whenever the favorites array changes (toggle on detail screen).
   useEffect(() => {
@@ -62,14 +63,19 @@ export default function SavedScreen() {
   }, [favoritesLoading, favorites]);
 
   const loadSaved = async () => {
-    setIsLoading(true);
+    if (!hasLoaded.current) {
+      setIsLoading(true);
+    }
     try {
       const saved = await savedLocations();
       setLocations(saved);
     } catch (error) {
       console.error('Failed to load saved locations:', error);
     } finally {
-      setIsLoading(false);
+      if (!hasLoaded.current) {
+        setIsLoading(false);
+        hasLoaded.current = true;
+      }
     }
   };
 

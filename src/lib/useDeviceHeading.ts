@@ -5,8 +5,6 @@ import type { LocationHeadingObject, LocationSubscription } from 'expo-location'
 export interface DeviceHeading {
   /** True heading in degrees (requires location permission; -1 if unavailable) */
   heading: number;
-  /** Magnetic heading in degrees */
-  magHeading: number;
   /** Calibration accuracy: 3=high, 2=medium, 1=low, 0=none */
   accuracy: number;
   /** Whether location permission is granted */
@@ -17,7 +15,6 @@ export interface DeviceHeading {
 
 export function useDeviceHeading(): DeviceHeading {
   const [heading, setHeading] = useState<number>(-1);
-  const [magHeading, setMagHeading] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(0);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
 
@@ -44,7 +41,6 @@ export function useDeviceHeading(): DeviceHeading {
         subscription = await Location.watchHeadingAsync(
           (headingObj: LocationHeadingObject) => {
             setHeading(headingObj.trueHeading);
-            setMagHeading(headingObj.magHeading);
             setAccuracy(headingObj.accuracy);
           },
           (error: string) => {
@@ -67,7 +63,6 @@ export function useDeviceHeading(): DeviceHeading {
 
   return {
     heading,
-    magHeading,
     accuracy,
     hasPermission,
     requestPermission,

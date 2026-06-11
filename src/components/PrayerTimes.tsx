@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, AppState } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { t } from '../i18n/strings';
@@ -24,6 +24,39 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
   const [loading, setLoading] = useState(true);
   const [locationStatus, setLocationStatus] = useState<'granted' | 'denied'>('granted');
   const [coords, setCoords] = useState<{ latitude: number; longitude: number }>(ATLANTA_COORDS);
+
+  // Helper to recompute next prayer from current time
+  const recomputeNextPrayer = () => {
+    const adhanCoords = new Coordinates(coords.latitude, coords.longitude);
+    const date = new Date();
+    const params = CalculationMethod.NorthAmerica();
+    const prayerTimes = new PrayerTimes(adhanCoords, date, params);
+
+    const times: PrayerTime[] = [
+      { name: t.fajr[lang], time: prayerTimes.fajr },
+      { name: t.sunrise[lang], time: prayerTimes.sunrise },
+      { name: t.dhuhr[lang], time: prayerTimes.dhuhr },
+      { name: t.asr[lang], time: prayerTimes.asr },
+      { name: t.maghrib[lang], time: prayerTimes.maghrib },
+      { name: t.isha[lang], time: prayerTimes.isha },
+    ];
+
+    setPrayers(times);
+
+    const now = new Date();
+    const upcoming = times.find((p) => p.time > now);
+    if (upcoming) {
+      setNextPrayer(upcoming.name);
+      setNextPrayerTime(upcoming.time);
+    } else {
+      // No prayer left today — next is tomorrow's Fajr
+      const tomorrow = new Date(date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowPrayerTimes = new PrayerTimes(adhanCoords, tomorrow, params);
+      setNextPrayer(t.fajr[lang]);
+      setNextPrayerTime(tomorrowPrayerTimes.fajr);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -104,6 +137,17 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
     };
   }, [lang]);
 
+  // Recompute prayer times when app returns to foreground
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        recomputeNextPrayer();
+      }
+    });
+
+    return () => subscription.remove();
+  }, [coords, lang]);
+
   // Countdown timer
   useEffect(() => {
     if (!prayers.length || !nextPrayer || !nextPrayerTime) return;
@@ -118,35 +162,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
         setCountdown(`${hours}h ${minutes}m ${seconds}s`);
       } else {
         // Current prayer time has elapsed — recompute next prayer
-        const adhanCoords = new Coordinates(coords.latitude, coords.longitude);
-        const date = new Date();
-        const params = CalculationMethod.NorthAmerica();
-        const prayerTimes = new PrayerTimes(adhanCoords, date, params);
-
-        const times: PrayerTime[] = [
-          { name: t.fajr[lang], time: prayerTimes.fajr },
-          { name: t.sunrise[lang], time: prayerTimes.sunrise },
-          { name: t.dhuhr[lang], time: prayerTimes.dhuhr },
-          { name: t.asr[lang], time: prayerTimes.asr },
-          { name: t.maghrib[lang], time: prayerTimes.maghrib },
-          { name: t.isha[lang], time: prayerTimes.isha },
-        ];
-
-        setPrayers(times);
-
-        const upcoming = times.find((p) => p.time > now);
-        if (upcoming) {
-          setNextPrayer(upcoming.name);
-          setNextPrayerTime(upcoming.time);
-        } else {
-          // No prayer left today — next is tomorrow's Fajr
-          const tomorrow = new Date(date);
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          const tomorrowPrayerTimes = new PrayerTimes(adhanCoords, tomorrow, params);
-          setNextPrayer(t.fajr[lang]);
-          setNextPrayerTime(tomorrowPrayerTimes.fajr);
-        }
-
+        recomputeNextPrayer();
         setCountdown('');
       }
     }, 1000);
