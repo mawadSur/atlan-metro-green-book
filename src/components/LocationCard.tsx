@@ -87,7 +87,7 @@ export function LocationCard({ location, lang, userCoords }: LocationCardProps) 
                   halal.tone === 'listed' && styles.badgeTextListed,
                 ]}
               >
-                {halal.text.split('—')[0].trim()}
+                {halal.short}
               </Text>
             </View>
           )}

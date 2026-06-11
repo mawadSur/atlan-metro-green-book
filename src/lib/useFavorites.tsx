@@ -1,11 +1,26 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
 import type { Location } from './types';
 
 const FAVORITES_KEY = 'gb_favorites';
 
-export function useFavorites() {
+interface FavoritesContextValue {
+  favorites: string[];
+  isSaved: (id: string) => boolean;
+  toggle: (id: string) => Promise<void>;
+  savedLocations: () => Promise<Location[]>;
+  isLoading: boolean;
+}
+
+const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
+
+/**
+ * Shared favorites state provider. Wraps the app to ensure all screens read
+ * from a single source of truth — when a location is favorited on the detail
+ * screen, the Saved tab automatically reflects the change (no manual re-fetch).
+ */
+export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,11 +85,30 @@ export function useFavorites() {
     }
   }, [favorites]);
 
-  return {
-    favorites,
-    isSaved,
-    toggle,
-    savedLocations,
-    isLoading,
-  };
+  return (
+    <FavoritesContext.Provider
+      value={{
+        favorites,
+        isSaved,
+        toggle,
+        savedLocations,
+        isLoading,
+      }}
+    >
+      {children}
+    </FavoritesContext.Provider>
+  );
+}
+
+/**
+ * Hook to access shared favorites state. Must be used within FavoritesProvider.
+ * Return shape is identical to the old per-component hook for backward
+ * compatibility.
+ */
+export function useFavorites() {
+  const context = useContext(FavoritesContext);
+  if (!context) {
+    throw new Error('useFavorites must be used within FavoritesProvider');
+  }
+  return context;
 }

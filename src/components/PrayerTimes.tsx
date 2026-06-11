@@ -19,9 +19,11 @@ const ATLANTA_COORDS = { latitude: 33.7545, longitude: -84.3898 };
 export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
   const [prayers, setPrayers] = useState<PrayerTime[]>([]);
   const [nextPrayer, setNextPrayer] = useState<string | null>(null);
+  const [nextPrayerTime, setNextPrayerTime] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [locationStatus, setLocationStatus] = useState<'granted' | 'denied'>('granted');
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number }>(ATLANTA_COORDS);
 
   useEffect(() => {
     let mounted = true;
@@ -31,14 +33,14 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
         // Request location permission
         const { status } = await Location.requestForegroundPermissionsAsync();
 
-        let coords = ATLANTA_COORDS;
+        let locationCoords = ATLANTA_COORDS;
 
         if (status === 'granted') {
           try {
             const location = await Location.getCurrentPositionAsync({
               accuracy: Location.LocationAccuracy.Balanced,
             });
-            coords = {
+            locationCoords = {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             };
@@ -51,8 +53,12 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
           if (mounted) setLocationStatus('denied');
         }
 
+        if (mounted) {
+          setCoords(locationCoords);
+        }
+
         // Calculate prayer times
-        const adhanCoords = new Coordinates(coords.latitude, coords.longitude);
+        const adhanCoords = new Coordinates(locationCoords.latitude, locationCoords.longitude);
         const date = new Date();
         const params = CalculationMethod.NorthAmerica();
         const prayerTimes = new PrayerTimes(adhanCoords, date, params);
@@ -76,6 +82,14 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
         const upcoming = times.find((p) => p.time > now);
         if (upcoming && mounted) {
           setNextPrayer(upcoming.name);
+          setNextPrayerTime(upcoming.time);
+        } else if (mounted) {
+          // No prayer left today — next is tomorrow's Fajr
+          const tomorrow = new Date(date);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const tomorrowPrayerTimes = new PrayerTimes(adhanCoords, tomorrow, params);
+          setNextPrayer(t.fajr[lang]);
+          setNextPrayerTime(tomorrowPrayerTimes.fajr);
         }
       } catch (err) {
         console.error('Error loading prayer times:', err);
@@ -92,26 +106,53 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
 
   // Countdown timer
   useEffect(() => {
-    if (!prayers.length || !nextPrayer) return;
+    if (!prayers.length || !nextPrayer || !nextPrayerTime) return;
 
     const interval = setInterval(() => {
       const now = new Date();
-      const next = prayers.find((p) => p.name === nextPrayer);
-      if (next) {
-        const diff = next.time.getTime() - now.getTime();
-        if (diff > 0) {
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      const diff = nextPrayerTime.getTime() - now.getTime();
+      if (diff > 0) {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        // Current prayer time has elapsed — recompute next prayer
+        const adhanCoords = new Coordinates(coords.latitude, coords.longitude);
+        const date = new Date();
+        const params = CalculationMethod.NorthAmerica();
+        const prayerTimes = new PrayerTimes(adhanCoords, date, params);
+
+        const times: PrayerTime[] = [
+          { name: t.fajr[lang], time: prayerTimes.fajr },
+          { name: t.sunrise[lang], time: prayerTimes.sunrise },
+          { name: t.dhuhr[lang], time: prayerTimes.dhuhr },
+          { name: t.asr[lang], time: prayerTimes.asr },
+          { name: t.maghrib[lang], time: prayerTimes.maghrib },
+          { name: t.isha[lang], time: prayerTimes.isha },
+        ];
+
+        setPrayers(times);
+
+        const upcoming = times.find((p) => p.time > now);
+        if (upcoming) {
+          setNextPrayer(upcoming.name);
+          setNextPrayerTime(upcoming.time);
         } else {
-          setCountdown('');
+          // No prayer left today — next is tomorrow's Fajr
+          const tomorrow = new Date(date);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const tomorrowPrayerTimes = new PrayerTimes(adhanCoords, tomorrow, params);
+          setNextPrayer(t.fajr[lang]);
+          setNextPrayerTime(tomorrowPrayerTimes.fajr);
         }
+
+        setCountdown('');
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [prayers, nextPrayer]);
+  }, [prayers, nextPrayer, nextPrayerTime, coords, lang]);
 
   if (loading) {
     return (

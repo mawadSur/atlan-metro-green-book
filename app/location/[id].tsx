@@ -13,6 +13,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../src/lib/supabase';
+import { useLang } from '../../src/lib/LangContext';
 import { typeStyle, typeLabel, localized, discountOffer, googleMapsUrl } from '../../src/lib/display';
 import { HalalBadge } from '../../src/components/HalalBadge';
 import { useFavorites } from '../../src/lib/useFavorites';
@@ -28,7 +29,7 @@ export default function LocationDetailScreen() {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
   const { isSaved, toggle } = useFavorites();
-  const lang: Lang = 'en';
+  const { lang } = useLang();
 
   useEffect(() => {
     async function fetchLocation() {

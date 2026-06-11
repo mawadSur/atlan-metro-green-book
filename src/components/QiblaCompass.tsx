@@ -23,7 +23,7 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
   const [qiblaBearing, setQiblaBearing] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [locationStatus, setLocationStatus] = useState<'granted' | 'denied'>('granted');
-  const { heading, magHeading, accuracy, hasPermission, requestPermission } =
+  const { heading, accuracy, hasPermission, requestPermission } =
     useDeviceHeading();
 
   const rotateAnim = useRef(new Animated.Value(0)).current;

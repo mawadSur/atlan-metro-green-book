@@ -16,5 +16,6 @@ export function haversineDistance(from: Coordinates, to: Coordinates): Distance 
 
 export function formatDistance(d: Distance, lang: 'en' | 'ar' | 'es'): string {
   const mi = d.miles.toFixed(1);
+  // 'mi' abbreviation is correct for both English and Spanish; Arabic uses 'ميل'
   return lang === 'ar' ? `${mi} ميل` : `${mi} mi`;
 }

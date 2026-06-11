@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Lang } from './types';
 
@@ -27,6 +28,16 @@ export function LangProvider({ children }: { children: ReactNode }) {
         setIsHydrated(true);
       });
   }, []);
+
+  // Apply RTL layout when Arabic is selected. forceRTL requires a native restart
+  // to take full effect on iOS (Android may adapt more quickly).
+  useEffect(() => {
+    const isRTL = lang === 'ar';
+    if (isRTL !== I18nManager.isRTL) {
+      I18nManager.allowRTL(true);
+      I18nManager.forceRTL(isRTL);
+    }
+  }, [lang]);
 
   const setLang = (newLang: Lang) => {
     setLangState(newLang);

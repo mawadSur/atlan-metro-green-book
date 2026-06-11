@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
+import { Linking } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import { LangProvider, useLang } from '../src/lib/LangContext';
+import { FavoritesProvider } from '../src/lib/useFavorites';
 import { configureNotifications, refreshPushRegistration } from '../src/lib/push';
 
 /**
@@ -20,10 +22,15 @@ function NotificationsBridge() {
   const handledColdStart = useRef(false);
 
   // Route helper: only follow in-app paths we recognize; ignore anything else.
+  // /match/* deep links open the web page (no native match screen yet).
   const routeFromData = (data: unknown) => {
     const url = (data as { url?: unknown })?.url;
     if (typeof url === 'string' && url.startsWith('/')) {
-      router.push(url as never);
+      if (url.startsWith('/match')) {
+        Linking.openURL('https://atlan-green-book.vercel.app' + url);
+      } else {
+        router.push(url as never);
+      }
     }
   };
 
@@ -63,22 +70,24 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <LangProvider>
-        <NotificationsBridge />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="location/[id]"
-            options={{
-              presentation: 'modal',
-              headerShown: true,
-              headerBackTitle: 'Back',
+        <FavoritesProvider>
+          <NotificationsBridge />
+          <Stack
+            screenOptions={{
+              headerShown: false,
             }}
-          />
-        </Stack>
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="location/[id]"
+              options={{
+                presentation: 'modal',
+                headerShown: true,
+                headerBackTitle: 'Back',
+              }}
+            />
+          </Stack>
+        </FavoritesProvider>
       </LangProvider>
     </SafeAreaProvider>
   );

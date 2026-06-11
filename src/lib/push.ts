@@ -154,6 +154,9 @@ export async function disablePush(): Promise<void> {
  * end on-device. Also logs this device's Expo push token so you can copy it
  * into `scripts/send-push.mjs` to test the real remote-delivery leg. Returns
  * the token (or null if unavailable / not a physical device).
+ *
+ * NOTE: /match/* deep links open the canonical web page (atlan-green-book.vercel.app)
+ * since the native app does not yet implement match screens.
  */
 export async function sendLocalTest(): Promise<string | null> {
   try {

@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLang } from '../../src/lib/LangContext';
 import { PrayerTimesComponent } from '../../src/components/PrayerTimes';
 import { QiblaCompass } from '../../src/components/QiblaCompass';
-import type { Lang } from '../../src/lib/types';
 
 export default function PrayerScreen() {
-  // For now, default to English. In production, this would come from app-wide context.
-  const [lang] = useState<Lang>('en');
+  const { lang } = useLang();
   const insets = useSafeAreaInsets();
 
   return (

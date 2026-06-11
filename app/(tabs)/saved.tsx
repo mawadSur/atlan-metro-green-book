@@ -50,15 +50,16 @@ function LocationCard({ location, lang }: { location: Location; lang: 'en' | 'ar
 export default function SavedScreen() {
   const { lang } = useLang();
   const insets = useSafeAreaInsets();
-  const { savedLocations, isLoading: favoritesLoading } = useFavorites();
+  const { favorites, savedLocations, isLoading: favoritesLoading } = useFavorites();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Re-fetch whenever the favorites array changes (toggle on detail screen).
   useEffect(() => {
     if (!favoritesLoading) {
       loadSaved();
     }
-  }, [favoritesLoading]);
+  }, [favoritesLoading, favorites]);
 
   const loadSaved = async () => {
     setIsLoading(true);
