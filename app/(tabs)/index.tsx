@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as ExpoLocation from 'expo-location';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { getLocations } from '../../src/lib/supabase';
 import type { Location, Filters } from '../../src/lib/types';
@@ -27,6 +28,7 @@ const MAX_MARKERS = 300;
 
 export default function MapListScreen() {
   const { lang } = useLang();
+  const insets = useSafeAreaInsets();
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,7 +147,7 @@ export default function MapListScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Search bar */}
       <View style={styles.searchBar}>
         <Ionicons name="search" size={20} color="#78716c" style={styles.searchIcon} />

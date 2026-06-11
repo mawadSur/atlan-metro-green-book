@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { usePushOptIn } from '../../src/lib/usePushOptIn';
 import { sendLocalTest } from '../../src/lib/push';
@@ -18,6 +19,7 @@ import { colors, spacing } from '../../src/theme/colors';
 
 export default function MoreScreen() {
   const { lang, setLang } = useLang();
+  const insets = useSafeAreaInsets();
   const push = usePushOptIn();
   const [pushNote, setPushNote] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export default function MoreScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.headerTitle}>{t.more[lang]}</Text>
       </View>
 
@@ -156,7 +158,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.xl,
     paddingBottom: spacing.md,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,

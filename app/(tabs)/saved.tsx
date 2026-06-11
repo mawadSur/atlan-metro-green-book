@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { useFavorites } from '../../src/lib/useFavorites';
 import { t } from '../../src/i18n/strings';
@@ -48,6 +49,7 @@ function LocationCard({ location, lang }: { location: Location; lang: 'en' | 'ar
 
 export default function SavedScreen() {
   const { lang } = useLang();
+  const insets = useSafeAreaInsets();
   const { savedLocations, isLoading: favoritesLoading } = useFavorites();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,7 +92,7 @@ export default function SavedScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.headerTitle}>{t.savedPlaces[lang]}</Text>
       </View>
       <FlatList
@@ -140,7 +142,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.xl,
     paddingBottom: spacing.md,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
