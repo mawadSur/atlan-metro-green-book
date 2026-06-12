@@ -5,6 +5,7 @@ import type { Coordinates } from '../lib/geo';
 import { localized, typeLabel, typeStyle, halalLabel } from '../lib/display';
 import { haversineDistance, formatDistance } from '../lib/geo';
 import { router } from 'expo-router';
+import { maxFontScale } from '../theme/colors';
 
 interface LocationCardProps {
   location: Location;
@@ -31,9 +32,17 @@ export function LocationCard({ location, lang, userCoords }: LocationCardProps) 
     router.push(`/location/${location.id}` as any);
   };
 
+  // Compose a VoiceOver label from the same localized text shown on the card:
+  // name, type, honest halal status, and distance when known.
+  const a11yLabel = [name, typeText, halal.tone !== 'none' ? halal.text : null, distance]
+    .filter(Boolean)
+    .join(', ');
+
   return (
     <Pressable
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={a11yLabel}
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
     >
       <View style={styles.imageContainer}>
@@ -63,13 +72,13 @@ export function LocationCard({ location, lang, userCoords }: LocationCardProps) 
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.name} numberOfLines={1}>
+        <Text style={styles.name} numberOfLines={1} maxFontSizeMultiplier={maxFontScale}>
           {name}
         </Text>
 
         <View style={styles.badges}>
           <View style={[styles.badge, styles.badgeType]}>
-            <Text style={styles.badgeText}>{typeText}</Text>
+            <Text style={styles.badgeText} maxFontSizeMultiplier={maxFontScale}>{typeText}</Text>
           </View>
 
           {halal.tone !== 'none' && (
@@ -86,6 +95,7 @@ export function LocationCard({ location, lang, userCoords }: LocationCardProps) 
                   halal.tone === 'verified' && styles.badgeTextVerified,
                   halal.tone === 'listed' && styles.badgeTextListed,
                 ]}
+                maxFontSizeMultiplier={maxFontScale}
               >
                 {halal.short}
               </Text>
@@ -94,7 +104,7 @@ export function LocationCard({ location, lang, userCoords }: LocationCardProps) 
         </View>
 
         {distance && (
-          <Text style={styles.distance} numberOfLines={1}>
+          <Text style={styles.distance} numberOfLines={1} maxFontSizeMultiplier={maxFontScale}>
             {distance}
           </Text>
         )}

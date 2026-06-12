@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { Filters, Lang } from '../lib/types';
 import { t } from '../i18n/strings';
 import { colors, maxFontScale } from '../theme/colors';
@@ -40,6 +41,14 @@ export function FilterChips({ filters, onToggle, lang }: FilterChipsProps) {
               pressed && styles.chipPressed,
             ]}
           >
+            {active && (
+              <Ionicons
+                name="checkmark"
+                size={15}
+                color={colors.bg}
+                style={styles.chipIcon}
+              />
+            )}
             <Text style={[styles.chipText, active && styles.chipTextActive]} maxFontSizeMultiplier={maxFontScale}>
               {label}
             </Text>
@@ -60,6 +69,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
@@ -69,6 +80,9 @@ const styles = StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
     marginRight: 8,
+  },
+  chipIcon: {
+    marginRight: 4,
   },
   chipActive: {
     backgroundColor: colors.brand,

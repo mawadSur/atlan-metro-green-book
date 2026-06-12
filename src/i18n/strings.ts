@@ -34,6 +34,7 @@ export const t: Record<string, Dict> = {
   search: { en: 'Search places…', ar: 'ابحث عن أماكن…', es: 'Buscar lugares…' },
   noResults: { en: 'No places match your filters.', ar: 'لا توجد أماكن مطابقة.', es: 'No hay lugares que coincidan.' },
   offer: { en: 'Offer', ar: 'عرض', es: 'Oferta' },
+  code: { en: 'Code', ar: 'الرمز', es: 'Código' },
   close: { en: 'Close', ar: 'إغلاق', es: 'Cerrar' },
   prayerTimes: { en: 'Prayer Times', ar: 'مواقيت الصلاة', es: 'Horarios de oración' },
   fajr: { en: 'Fajr', ar: 'الفجر', es: 'Fajr' },

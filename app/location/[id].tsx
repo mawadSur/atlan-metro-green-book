@@ -225,7 +225,7 @@ export default function LocationDetailScreen() {
               <Text style={styles.offerText}>{offer}</Text>
               {location.discount_code && (
                 <View style={styles.codeContainer}>
-                  <Text style={styles.codeLabel}>Code:</Text>
+                  <Text style={styles.codeLabel}>{t.code[lang]}:</Text>
                   <Text style={styles.codeText}>{location.discount_code}</Text>
                 </View>
               )}
