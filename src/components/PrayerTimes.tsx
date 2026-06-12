@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, AppState } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { useFocusEffect } from 'expo-router';
 import { t } from '../i18n/strings';
 import type { Lang } from '../lib/types';
+import { colors, maxFontScale } from '../theme/colors';
 
 interface PrayerTimesProps {
   lang?: Lang;
@@ -148,32 +150,34 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
     return () => subscription.remove();
   }, [coords, lang]);
 
-  // Countdown timer
-  useEffect(() => {
-    if (!prayers.length || !nextPrayer || !nextPrayerTime) return;
+  // Countdown timer - only runs when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (!prayers.length || !nextPrayer || !nextPrayerTime) return;
 
-    const interval = setInterval(() => {
-      const now = new Date();
-      const diff = nextPrayerTime.getTime() - now.getTime();
-      if (diff > 0) {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setCountdown(`${hours}h ${minutes}m ${seconds}s`);
-      } else {
-        // Current prayer time has elapsed — recompute next prayer
-        recomputeNextPrayer();
-        setCountdown('');
-      }
-    }, 1000);
+      const interval = setInterval(() => {
+        const now = new Date();
+        const diff = nextPrayerTime.getTime() - now.getTime();
+        if (diff > 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+        } else {
+          // Current prayer time has elapsed — recompute next prayer
+          recomputeNextPrayer();
+          setCountdown('');
+        }
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, [prayers, nextPrayer, nextPrayerTime, coords, lang]);
+      return () => clearInterval(interval);
+    }, [prayers, nextPrayer, nextPrayerTime, coords, lang])
+  );
 
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0f766e" />
+        <ActivityIndicator size="large" color={colors.brand} />
         <Text style={styles.loadingText}>{t.loading[lang]}</Text>
       </View>
     );
@@ -182,7 +186,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{t.prayerTimes[lang]}</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={maxFontScale}>{t.prayerTimes[lang]}</Text>
         {locationStatus === 'denied' && (
           <Text style={styles.locationNote}>{t.locationDenied[lang]}</Text>
         )}
@@ -201,6 +205,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
               styles.prayerName,
               prayer.name === nextPrayer && styles.nextPrayerText,
             ]}
+            maxFontSizeMultiplier={maxFontScale}
           >
             {prayer.name}
             {prayer.name === nextPrayer && ` (${t.nextPrayer[lang]})`}
@@ -210,6 +215,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
               styles.prayerTime,
               prayer.name === nextPrayer && styles.nextPrayerText,
             ]}
+            maxFontSizeMultiplier={maxFontScale}
           >
             {prayer.time.toLocaleTimeString('en-US', {
               hour: 'numeric',
@@ -223,7 +229,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
       {nextPrayer && countdown && (
         <View style={styles.countdownContainer}>
           <Text style={styles.countdownLabel}>{t.nextPrayer[lang]}</Text>
-          <Text style={styles.countdown}>{countdown}</Text>
+          <Text style={styles.countdown} maxFontSizeMultiplier={maxFontScale}>{countdown}</Text>
         </View>
       )}
     </View>
@@ -232,7 +238,7 @@ export function PrayerTimesComponent({ lang = 'en' }: PrayerTimesProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fafaf9',
+    backgroundColor: colors.bg,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -243,18 +249,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1c1917',
+    color: colors.ink,
     marginBottom: 4,
   },
   locationNote: {
     fontSize: 12,
-    color: '#78716c',
+    color: colors.inkMuted,
     fontStyle: 'italic',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
   },
   prayerRow: {
@@ -263,10 +269,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e7e5e4',
+    borderBottomColor: colors.border,
   },
   nextPrayerRow: {
-    backgroundColor: '#0f766e',
+    backgroundColor: colors.brand,
     marginHorizontal: -16,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -274,15 +280,15 @@ const styles = StyleSheet.create({
   },
   prayerName: {
     fontSize: 16,
-    color: '#1c1917',
+    color: colors.ink,
     fontWeight: '500',
   },
   prayerTime: {
     fontSize: 16,
-    color: '#57534e',
+    color: colors.inkSoft,
   },
   nextPrayerText: {
-    color: '#ffffff',
+    color: colors.surface,
     fontWeight: '600',
   },
   countdownContainer: {
@@ -302,6 +308,6 @@ const styles = StyleSheet.create({
   countdown: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#0f766e',
+    color: colors.brand,
   },
 });

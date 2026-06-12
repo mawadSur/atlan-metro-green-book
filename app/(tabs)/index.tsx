@@ -22,6 +22,7 @@ import { typeStyle } from '../../src/lib/display';
 import { t } from '../../src/i18n/strings';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { colors, maxFontScale } from '../../src/theme/colors';
 
 const ATLANTA_CENTER = { lat: 33.7545, lng: -84.3898 };
 const MAX_MARKERS = 300;
@@ -127,7 +128,7 @@ export default function MapListScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0f766e" />
+        <ActivityIndicator size="large" color={colors.brand} />
         <Text style={styles.loadingText}>{t.loading[lang]}</Text>
       </View>
     );
@@ -136,11 +137,15 @@ export default function MapListScreen() {
   if (error) {
     return (
       <View style={styles.centerContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#dc2626" />
-        <Text style={styles.errorTitle}>{t.errorTitle[lang]}</Text>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.danger} />
+        <Text style={styles.errorTitle} maxFontSizeMultiplier={maxFontScale}>{t.errorTitle[lang]}</Text>
         <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={loadLocations}>
-          <Text style={styles.retryButtonText}>{t.retry[lang]}</Text>
+        <Pressable
+          style={styles.retryButton}
+          onPress={loadLocations}
+          accessibilityRole="button"
+        >
+          <Text style={styles.retryButtonText} maxFontSizeMultiplier={maxFontScale}>{t.retry[lang]}</Text>
         </Pressable>
       </View>
     );
@@ -150,17 +155,25 @@ export default function MapListScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Search bar */}
       <View style={styles.searchBar}>
-        <Ionicons name="search" size={20} color="#78716c" style={styles.searchIcon} />
+        <Ionicons name="search" size={20} color={colors.inkMuted} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder={t.search[lang]}
-          placeholderTextColor="#a8a29e"
+          placeholderTextColor={colors.placeholderText}
           value={searchQuery}
           onChangeText={setSearchQuery}
+          maxFontSizeMultiplier={maxFontScale}
         />
         {searchQuery.length > 0 && (
-          <Pressable onPress={() => setSearchQuery('')} style={styles.clearButton}>
-            <Ionicons name="close-circle" size={20} color="#78716c" />
+          <Pressable
+            onPress={() => setSearchQuery('')}
+            style={styles.clearButton}
+            accessibilityRole="button"
+            accessibilityLabel={
+              lang === 'ar' ? 'مسح البحث' : lang === 'es' ? 'Borrar búsqueda' : 'Clear search'
+            }
+          >
+            <Ionicons name="close-circle" size={20} color={colors.inkMuted} />
           </Pressable>
         )}
       </View>
@@ -173,14 +186,20 @@ export default function MapListScreen() {
         <Pressable
           style={[styles.toggleButton, viewMode === 'map' && styles.toggleButtonActive]}
           onPress={() => setViewMode('map')}
+          accessibilityRole="button"
+          accessibilityLabel={
+            lang === 'ar' ? 'عرض الخريطة' : lang === 'es' ? 'Vista de mapa' : 'Map view'
+          }
+          accessibilityState={{ selected: viewMode === 'map' }}
         >
           <Ionicons
             name="map"
             size={18}
-            color={viewMode === 'map' ? '#fafaf9' : '#57534e'}
+            color={viewMode === 'map' ? colors.bg : colors.inkSoft}
           />
           <Text
             style={[styles.toggleText, viewMode === 'map' && styles.toggleTextActive]}
+            maxFontSizeMultiplier={maxFontScale}
           >
             {t.map[lang]}
           </Text>
@@ -188,14 +207,20 @@ export default function MapListScreen() {
         <Pressable
           style={[styles.toggleButton, viewMode === 'list' && styles.toggleButtonActive]}
           onPress={() => setViewMode('list')}
+          accessibilityRole="button"
+          accessibilityLabel={
+            lang === 'ar' ? 'عرض القائمة' : lang === 'es' ? 'Vista de lista' : 'List view'
+          }
+          accessibilityState={{ selected: viewMode === 'list' }}
         >
           <Ionicons
             name="list"
             size={18}
-            color={viewMode === 'list' ? '#fafaf9' : '#57534e'}
+            color={viewMode === 'list' ? colors.bg : colors.inkSoft}
           />
           <Text
             style={[styles.toggleText, viewMode === 'list' && styles.toggleTextActive]}
+            maxFontSizeMultiplier={maxFontScale}
           >
             {t.list[lang]}
           </Text>
@@ -204,7 +229,7 @@ export default function MapListScreen() {
 
       {/* Results count */}
       <View style={styles.resultsBar}>
-        <Text style={styles.resultsText}>
+        <Text style={styles.resultsText} maxFontSizeMultiplier={maxFontScale}>
           {filteredLocations.length} {t.results[lang]}
         </Text>
         {filteredLocations.length > MAX_MARKERS && viewMode === 'map' && (
@@ -253,7 +278,7 @@ export default function MapListScreen() {
         <>
           {filteredLocations.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Ionicons name="search-outline" size={48} color="#a8a29e" />
+              <Ionicons name="search-outline" size={48} color={colors.placeholderText} />
               <Text style={styles.emptyText}>{t.noResults[lang]}</Text>
             </View>
           ) : (
@@ -276,37 +301,37 @@ export default function MapListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafaf9',
+    backgroundColor: colors.bg,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fafaf9',
+    backgroundColor: colors.bg,
     padding: 24,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#57534e',
+    color: colors.inkSoft,
   },
   errorTitle: {
     marginTop: 16,
     fontSize: 18,
     fontWeight: '600',
-    color: '#1c1917',
+    color: colors.ink,
   },
   errorText: {
     marginTop: 8,
     fontSize: 14,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
   },
   retryButton: {
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#0f766e',
+    backgroundColor: colors.brand,
     borderRadius: 8,
     minHeight: 44,
     justifyContent: 'center',
@@ -314,7 +339,7 @@ const styles = StyleSheet.create({
   retryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fafaf9',
+    color: colors.bg,
   },
   searchBar: {
     flexDirection: 'row',
@@ -322,10 +347,10 @@ const styles = StyleSheet.create({
     margin: 16,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e7e5e4',
+    borderColor: colors.border,
     minHeight: 44,
   },
   searchIcon: {
@@ -334,7 +359,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1c1917',
+    color: colors.ink,
   },
   clearButton: {
     padding: 4,
@@ -343,7 +368,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: '#e7e5e4',
+    backgroundColor: colors.border,
     borderRadius: 10,
     padding: 4,
   },
@@ -358,15 +383,15 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   toggleButtonActive: {
-    backgroundColor: '#0f766e',
+    backgroundColor: colors.brand,
   },
   toggleText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#57534e',
+    color: colors.inkSoft,
   },
   toggleTextActive: {
-    color: '#fafaf9',
+    color: colors.bg,
   },
   resultsBar: {
     flexDirection: 'row',
@@ -378,11 +403,11 @@ const styles = StyleSheet.create({
   resultsText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#57534e',
+    color: colors.inkSoft,
   },
   resultsHint: {
     fontSize: 12,
-    color: '#a8a29e',
+    color: colors.placeholderText,
   },
   map: {
     flex: 1,
@@ -392,7 +417,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 4,
     borderWidth: 2,
-    borderColor: '#0f766e',
+    borderColor: colors.brand,
   },
   markerIcon: {
     fontSize: 20,
@@ -409,7 +434,7 @@ const styles = StyleSheet.create({
   emptyText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
   },
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { Location, Lang } from '../lib/types';
+import { colors, maxFontScale } from '../theme/colors';
 
 interface HalalBadgeProps {
   location: Location;
@@ -27,7 +28,7 @@ export function HalalBadge({ location, lang }: HalalBadgeProps) {
 
     return (
       <View style={[styles.badge, styles.verified]}>
-        <Text style={[styles.text, styles.verifiedText]}>{text}</Text>
+        <Text style={[styles.text, styles.verifiedText]} maxFontSizeMultiplier={maxFontScale}>{text}</Text>
       </View>
     );
   }
@@ -42,7 +43,7 @@ export function HalalBadge({ location, lang }: HalalBadgeProps) {
 
     return (
       <View style={[styles.badge, styles.communityListed]}>
-        <Text style={[styles.text, styles.communityText]}>{text}</Text>
+        <Text style={[styles.text, styles.communityText]} maxFontSizeMultiplier={maxFontScale}>{text}</Text>
       </View>
     );
   }
@@ -58,10 +59,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   verified: {
-    backgroundColor: '#065f46',
+    backgroundColor: colors.brandDark,
   },
   communityListed: {
-    backgroundColor: '#ca8a04',
+    backgroundColor: colors.accent,
   },
   text: {
     fontSize: 13,

@@ -12,6 +12,7 @@ import { Coordinates, Qibla } from 'adhan';
 import { useDeviceHeading } from '../lib/useDeviceHeading';
 import { t } from '../i18n/strings';
 import type { Lang } from '../lib/types';
+import { colors, maxFontScale } from '../theme/colors';
 
 interface QiblaCompassProps {
   lang?: Lang;
@@ -121,7 +122,7 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0f766e" />
+        <ActivityIndicator size="large" color={colors.brand} />
         <Text style={styles.loadingText}>{t.loading[lang]}</Text>
       </View>
     );
@@ -130,11 +131,16 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
   if (!hasPermission) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{t.qiblaDirection[lang]}</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={maxFontScale}>{t.qiblaDirection[lang]}</Text>
         <View style={styles.permissionBox}>
           <Text style={styles.permissionText}>{t.compassNotAvailable[lang]}</Text>
-          <TouchableOpacity style={styles.button} onPress={requestPermission}>
-            <Text style={styles.buttonText}>{t.enableCompass[lang]}</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={requestPermission}
+            accessibilityRole="button"
+            accessibilityLabel={t.enableCompass[lang]}
+          >
+            <Text style={styles.buttonText} maxFontSizeMultiplier={maxFontScale}>{t.enableCompass[lang]}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -148,7 +154,7 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t.qiblaDirection[lang]}</Text>
+      <Text style={styles.title} maxFontSizeMultiplier={maxFontScale}>{t.qiblaDirection[lang]}</Text>
 
       {locationStatus === 'denied' && (
         <Text style={styles.locationNote}>{t.locationDenied[lang]}</Text>
@@ -164,7 +170,10 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
       <View style={styles.compassContainer}>
         <View style={styles.compass}>
           {/* Compass circle with cardinal directions */}
-          <View style={styles.compassCircle}>
+          <View
+            style={styles.compassCircle}
+            accessibilityLabel={`Qibla ${Math.round(qiblaBearing)} degrees`}
+          >
             <Text style={[styles.cardinal, styles.cardinalN]}>N</Text>
             <Text style={[styles.cardinal, styles.cardinalE]}>E</Text>
             <Text style={[styles.cardinal, styles.cardinalS]}>S</Text>
@@ -191,7 +200,7 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>{t.qibla[lang]}:</Text>
-            <Text style={styles.infoValue}>
+            <Text style={styles.infoValue} maxFontSizeMultiplier={maxFontScale}>
               {Math.round(qiblaBearing)}° {getCardinalDirection(qiblaBearing)}
             </Text>
           </View>
@@ -201,7 +210,7 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
               <Text style={styles.infoLabel}>
                 {lang === 'ar' ? 'الاتجاه' : lang === 'es' ? 'Rumbo' : 'Heading'}:
               </Text>
-              <Text style={styles.infoValue}>
+              <Text style={styles.infoValue} maxFontSizeMultiplier={maxFontScale}>
                 {Math.round(heading)}° {getCardinalDirection(heading)}
               </Text>
             </View>
@@ -231,26 +240,26 @@ export function QiblaCompass({ lang = 'en' }: QiblaCompassProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fafaf9',
+    backgroundColor: colors.bg,
     borderRadius: 12,
     padding: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1c1917',
+    color: colors.ink,
     marginBottom: 12,
   },
   locationNote: {
     fontSize: 12,
-    color: '#78716c',
+    color: colors.inkMuted,
     fontStyle: 'italic',
     marginBottom: 8,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
   },
   permissionBox: {
@@ -259,12 +268,12 @@ const styles = StyleSheet.create({
   },
   permissionText: {
     fontSize: 14,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#0f766e',
+    backgroundColor: colors.brand,
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
@@ -272,7 +281,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: '#ffffff',
+    color: colors.surface,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -307,8 +316,8 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 120,
     borderWidth: 4,
-    borderColor: '#0f766e',
-    backgroundColor: '#ffffff',
+    borderColor: colors.brand,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -317,7 +326,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 20,
     fontWeight: '700',
-    color: '#0f766e',
+    color: colors.brand,
   },
   cardinalN: { top: 12 },
   cardinalE: { right: 12 },
@@ -327,7 +336,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#0f766e',
+    backgroundColor: colors.brand,
   },
   needle: {
     position: 'absolute',
@@ -346,7 +355,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 80,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderBottomColor: '#dc2626',
+    borderBottomColor: colors.danger,
   },
   infoContainer: {
     width: '100%',
@@ -360,12 +369,12 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    color: '#78716c',
+    color: colors.inkMuted,
     fontWeight: '500',
   },
   infoValue: {
     fontSize: 14,
-    color: '#1c1917',
+    color: colors.ink,
     fontWeight: '600',
   },
   accuracyBadge: {
@@ -373,7 +382,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: '#e7e5e4',
+    backgroundColor: colors.border,
   },
   accuracyText: {
     fontSize: 12,
@@ -394,7 +403,7 @@ const styles = StyleSheet.create({
   calibrationHint: {
     marginTop: 12,
     fontSize: 12,
-    color: '#78716c',
+    color: colors.inkMuted,
     textAlign: 'center',
     fontStyle: 'italic',
   },

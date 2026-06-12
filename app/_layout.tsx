@@ -82,8 +82,12 @@ export default function RootLayout() {
               name="location/[id]"
               options={{
                 presentation: 'modal',
-                headerShown: true,
-                headerBackTitle: 'Back',
+                // No native header: this screen renders its own full-bleed hero
+                // (image + overlaid back/favorite buttons) and shows the place
+                // name in large text below it. A native header here was both
+                // redundant (double back button) and showed the raw route name
+                // "location/[id]" during the data fetch.
+                headerShown: false,
               }}
             />
           </Stack>

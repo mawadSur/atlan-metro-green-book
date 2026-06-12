@@ -15,7 +15,7 @@ import { useLang } from '../../src/lib/LangContext';
 import { usePushOptIn } from '../../src/lib/usePushOptIn';
 import { sendLocalTest } from '../../src/lib/push';
 import { t, LANGS } from '../../src/i18n/strings';
-import { colors, spacing } from '../../src/theme/colors';
+import { colors, spacing, maxFontScale } from '../../src/theme/colors';
 
 export default function MoreScreen() {
   const { lang, setLang } = useLang();
@@ -49,15 +49,18 @@ export default function MoreScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <Text style={styles.headerTitle}>{t.more[lang]}</Text>
+        <Text style={styles.headerTitle} maxFontSizeMultiplier={maxFontScale}>{t.more[lang]}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t.language[lang]}</Text>
+        <Text style={styles.sectionTitle} maxFontSizeMultiplier={maxFontScale}>{t.language[lang]}</Text>
         {LANGS.map((l) => (
           <Pressable
             key={l.code}
             onPress={() => setLang(l.code)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: lang === l.code }}
+            accessibilityLabel={l.label}
             style={({ pressed }) => [
               styles.option,
               pressed && styles.optionPressed,
@@ -72,7 +75,7 @@ export default function MoreScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t.notifications[lang]}</Text>
+        <Text style={styles.sectionTitle} maxFontSizeMultiplier={maxFontScale}>{t.notifications[lang]}</Text>
         <View style={styles.notifyRow}>
           <View style={styles.notifyLabel}>
             <Text style={styles.optionText}>{t.notificationsToggle[lang]}</Text>
@@ -85,6 +88,7 @@ export default function MoreScreen() {
               onValueChange={(next) => {
                 void push.toggle(next);
               }}
+              accessibilityLabel={t.notificationsToggle[lang]}
               trackColor={{ false: colors.border, true: colors.brand }}
               thumbColor={colors.surface}
             />
@@ -95,6 +99,7 @@ export default function MoreScreen() {
         {__DEV__ && (
           <Pressable
             onPress={() => sendLocalTest()}
+            accessibilityRole="button"
             style={({ pressed }) => [
               styles.devTestButton,
               pressed && styles.optionPressed,
@@ -122,6 +127,8 @@ export default function MoreScreen() {
       <View style={styles.section}>
         <Pressable
           onPress={handleOpenPortal}
+          accessibilityRole="link"
+          accessibilityLabel={t.businessPortal[lang]}
           style={({ pressed }) => [
             styles.linkButton,
             pressed && styles.linkButtonPressed,
@@ -133,6 +140,8 @@ export default function MoreScreen() {
 
         <Pressable
           onPress={handleOpenAdmin}
+          accessibilityRole="link"
+          accessibilityLabel={t.adminPanel[lang]}
           style={({ pressed }) => [
             styles.linkButton,
             pressed && styles.linkButtonPressed,

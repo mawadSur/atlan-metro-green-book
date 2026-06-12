@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import type { Filters, Lang } from '../lib/types';
 import { t } from '../i18n/strings';
+import { colors, maxFontScale } from '../theme/colors';
 
 interface FilterChipsProps {
   filters: Filters;
@@ -30,13 +31,16 @@ export function FilterChips({ filters, onToggle, lang }: FilterChipsProps) {
           <Pressable
             key={key}
             onPress={() => onToggle(key)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
+            accessibilityLabel={label}
             style={({ pressed }) => [
               styles.chip,
               active && styles.chipActive,
               pressed && styles.chipPressed,
             ]}
           >
-            <Text style={[styles.chipText, active && styles.chipTextActive]}>
+            <Text style={[styles.chipText, active && styles.chipTextActive]} maxFontSizeMultiplier={maxFontScale}>
               {label}
             </Text>
           </Pressable>
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#fafaf9',
+    backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: '#d6d3d1',
     minHeight: 44,
@@ -67,8 +71,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   chipActive: {
-    backgroundColor: '#0f766e',
-    borderColor: '#0f766e',
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
   },
   chipPressed: {
     opacity: 0.7,
@@ -76,9 +80,9 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#57534e',
+    color: colors.inkSoft,
   },
   chipTextActive: {
-    color: '#fafaf9',
+    color: colors.bg,
   },
 });

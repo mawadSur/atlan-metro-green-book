@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../../src/lib/supabase';
 import { useLang } from '../../src/lib/LangContext';
 import { typeStyle, typeLabel, localized, discountOffer, googleMapsUrl } from '../../src/lib/display';
@@ -19,6 +20,7 @@ import { HalalBadge } from '../../src/components/HalalBadge';
 import { useFavorites } from '../../src/lib/useFavorites';
 import { t } from '../../src/i18n/strings';
 import type { Location, Lang } from '../../src/lib/types';
+import { colors, maxFontScale } from '../../src/theme/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +32,7 @@ export default function LocationDetailScreen() {
   const [imageError, setImageError] = useState(false);
   const { isSaved, toggle } = useFavorites();
   const { lang } = useLang();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     async function fetchLocation() {
@@ -126,7 +129,7 @@ export default function LocationDetailScreen() {
           ) : (
             <View
               style={[
-                styles.gradientPlaceholder,
+                styles.solidPlaceholder,
                 { backgroundColor: style.from },
               ]}
             >
@@ -134,18 +137,29 @@ export default function LocationDetailScreen() {
             </View>
           )}
 
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <Pressable
+            style={[styles.backButton, { top: insets.top + 8 }]}
+            onPress={() => router.back()}
+            accessibilityRole="button"
+            accessibilityLabel={lang === 'ar' ? 'رجوع' : lang === 'es' ? 'Atrás' : 'Back'}
+          >
             <Ionicons name="arrow-back" size={24} color="white" />
           </Pressable>
 
           <Pressable
-            style={styles.favoriteButton}
+            style={[styles.favoriteButton, { top: insets.top + 8 }]}
             onPress={handleFavorite}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isSaved(id as string)
+                ? (lang === 'ar' ? 'إزالة من المحفوظات' : lang === 'es' ? 'Quitar de guardados' : 'Remove from saved')
+                : (lang === 'ar' ? 'حفظ' : lang === 'es' ? 'Guardar' : 'Save')
+            }
           >
             <Ionicons
               name={isSaved(id as string) ? 'heart' : 'heart-outline'}
               size={24}
-              color={isSaved(id as string) ? '#ef4444' : 'white'}
+              color={isSaved(id as string) ? colors.heart : 'white'}
             />
           </Pressable>
         </View>
@@ -154,11 +168,11 @@ export default function LocationDetailScreen() {
         <View style={styles.content}>
           {/* Type Badge */}
           <View style={[styles.typeBadge, { backgroundColor: style.pin }]}>
-            <Text style={styles.typeBadgeText}>{typeLabel(location.type, lang)}</Text>
+            <Text style={styles.typeBadgeText} maxFontSizeMultiplier={maxFontScale}>{typeLabel(location.type, lang)}</Text>
           </View>
 
           {/* Name */}
-          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.name} maxFontSizeMultiplier={maxFontScale}>{name}</Text>
 
           {/* Address */}
           <View style={styles.infoRow}>
@@ -225,18 +239,20 @@ export default function LocationDetailScreen() {
         <Pressable
           style={[styles.actionButton, styles.primaryButton]}
           onPress={handleDirections}
+          accessibilityRole="button"
         >
           <Ionicons name="navigate" size={20} color="white" />
-          <Text style={styles.primaryButtonText}>{t.directions[lang]}</Text>
+          <Text style={styles.primaryButtonText} maxFontSizeMultiplier={maxFontScale}>{t.directions[lang]}</Text>
         </Pressable>
 
         {location.phone && (
           <Pressable
             style={[styles.actionButton, styles.secondaryButton]}
             onPress={handleCall}
+            accessibilityRole="button"
           >
             <Ionicons name="call-outline" size={20} color="#0f766e" />
-            <Text style={styles.secondaryButtonText}>{t.call[lang]}</Text>
+            <Text style={styles.secondaryButtonText} maxFontSizeMultiplier={maxFontScale}>{t.call[lang]}</Text>
           </Pressable>
         )}
       </View>
@@ -287,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
   },
-  gradientPlaceholder: {
+  solidPlaceholder: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
@@ -298,7 +314,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 48,
     left: 16,
     width: 44,
     height: 44,
@@ -309,7 +324,6 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     position: 'absolute',
-    top: 48,
     right: 16,
     width: 44,
     height: 44,

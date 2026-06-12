@@ -4,48 +4,15 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Pressable,
   ActivityIndicator,
 } from 'react-native';
-import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { useFavorites } from '../../src/lib/useFavorites';
 import { t } from '../../src/i18n/strings';
-import { colors, spacing } from '../../src/theme/colors';
-import { typeStyle, localized, typeLabel } from '../../src/lib/display';
+import { colors, spacing, maxFontScale } from '../../src/theme/colors';
 import type { Location } from '../../src/lib/types';
-
-function LocationCard({ location, lang }: { location: Location; lang: 'en' | 'ar' | 'es' }) {
-  const style = typeStyle(location.type);
-  const name = localized(location, 'name', lang);
-  const label = typeLabel(location.type, lang);
-
-  return (
-    <Pressable
-      onPress={() => router.push(`/location/${location.id}`)}
-      style={({ pressed }) => [
-        styles.card,
-        pressed && styles.cardPressed,
-      ]}
-    >
-      <View style={styles.cardHeader}>
-        <Text style={styles.icon}>{style.icon}</Text>
-        <View style={styles.cardContent}>
-          <Text style={styles.name} numberOfLines={1}>
-            {name}
-          </Text>
-          <Text style={styles.type}>{label}</Text>
-        </View>
-      </View>
-      {location.address && (
-        <Text style={styles.address} numberOfLines={1}>
-          {location.address}
-        </Text>
-      )}
-    </Pressable>
-  );
-}
+import { LocationCard } from '../../src/components/LocationCard';
 
 export default function SavedScreen() {
   const { lang } = useLang();
@@ -91,7 +58,7 @@ export default function SavedScreen() {
     return (
       <View style={styles.empty}>
         <Text style={styles.emptyIcon}>🔖</Text>
-        <Text style={styles.emptyTitle}>{t.noSavedPlaces[lang]}</Text>
+        <Text style={styles.emptyTitle} maxFontSizeMultiplier={maxFontScale}>{t.noSavedPlaces[lang]}</Text>
         <Text style={styles.emptyMessage}>{t.tapBookmark[lang]}</Text>
       </View>
     );
@@ -100,7 +67,7 @@ export default function SavedScreen() {
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <Text style={styles.headerTitle}>{t.savedPlaces[lang]}</Text>
+        <Text style={styles.headerTitle} maxFontSizeMultiplier={maxFontScale}>{t.savedPlaces[lang]}</Text>
       </View>
       <FlatList
         data={locations}
@@ -162,42 +129,5 @@ const styles = StyleSheet.create({
   list: {
     padding: spacing.md,
     gap: spacing.md,
-  },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  cardPressed: {
-    opacity: 0.7,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  icon: {
-    fontSize: 32,
-    marginEnd: spacing.md,
-  },
-  cardContent: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.ink,
-    marginBottom: 2,
-  },
-  type: {
-    fontSize: 14,
-    color: colors.inkSoft,
-  },
-  address: {
-    fontSize: 14,
-    color: colors.inkSoft,
-    marginStart: 48,
   },
 });
