@@ -30,6 +30,7 @@ import { createRequire } from 'node:module';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const ASSETS = join(ROOT, 'assets');
+const WEB_ICONS = join(ROOT, 'web', 'public', 'icons');
 
 // sharp lives in the web workspace, not the native root.
 const require = createRequire(join(ROOT, 'web', 'package.json'));
@@ -56,18 +57,33 @@ function markGroup({ mono = null } = {}) {
   const dome = mono ?? 'url(#gold)';
   const moon = mono ?? CREAM;
   const finial = mono ?? 'url(#gold)';
-  // arch: semicircle r=220 centered (510,516); drum: short straight sides to 660.
+  // A mosque onion-dome (bulged sides tapering to a point) on a short drum, with
+  // a spire + ball finial, and a waxing crescent moon in the upper-left negative
+  // space. The crescent is one closed path: a large outer arc (rim) plus a
+  // tighter inner arc (the concave bite) meeting at the two cusps. translate
+  // re-centers the combined bounding box on (500,500).
+  // Crescent = outer disc MINUS an offset "bite" disc. fill-rule can't do this
+  // cleanly when the bite spills outside the outer disc, so use a mask: white
+  // outer circle (keep) knocked out by a black bite circle (remove). The mask id
+  // differs per variant so the color + mono SVG buffers never collide.
+  const cresId = mono ? 'cresMono' : 'cresColor';
   return `
-  <g transform="translate(34,62)">
-    <!-- moon, upper-left, clear of the dome -->
-    <circle cx="275" cy="285" r="98" fill="${moon}" />
-    <!-- finial: spike + ball above the dome apex -->
-    <rect x="503" y="176" width="14" height="78" rx="7" fill="${finial}" />
-    <circle cx="510" cy="256" r="26" fill="${finial}" />
-    <!-- dome: wide arch on a short drum -->
-    <path d="M290 660 L290 516 A220 220 0 0 1 730 516 L730 660 Z" fill="${dome}" />
-    <!-- base lip -->
-    <rect x="265" y="636" width="490" height="68" rx="18" fill="${dome}" />
+  <defs>
+    <mask id="${cresId}" maskUnits="userSpaceOnUse">
+      <circle cx="252" cy="255" r="106" fill="#fff" />
+      <circle cx="320" cy="243" r="99" fill="#000" />
+    </mask>
+  </defs>
+  <g transform="translate(48,66)">
+    <!-- crescent moon, upper-left, opening toward the dome -->
+    <rect x="140" y="143" width="226" height="226" fill="${moon}" mask="url(#${cresId})" />
+    <!-- finial: spire + ball above the dome apex -->
+    <rect x="502" y="150" width="16" height="96" rx="8" fill="${finial}" />
+    <circle cx="510" cy="252" r="27" fill="${finial}" />
+    <!-- onion dome: bulged shoulders tapering to a point -->
+    <path fill="${dome}" d="M338 676 C296 598 310 534 360 470 C422 390 472 316 510 244 C548 316 598 390 660 470 C710 534 724 598 682 676 Z" />
+    <!-- base lip / drum -->
+    <rect x="300" y="650" width="420" height="66" rx="20" fill="${dome}" />
   </g>`;
 }
 
@@ -151,6 +167,21 @@ async function main() {
   // Web favicon.
   await sharp(icon).resize(48, 48).png().toFile(join(ASSETS, 'favicon.png'));
   console.log('✓ favicon.png');
+
+  // Web PWA icons (web/public/icons), so the browser tab, home-screen install,
+  // and OG fallbacks match the native mark. `icon` is the opaque teal-bg mark.
+  //   icon-*.png   : "any" purpose — mark fills the tile (same as iOS).
+  //   maskable-*   : "maskable" purpose — extra padding (mark ~60% of canvas, on
+  //                  full-bleed teal) so Android/Chrome launcher masks never clip.
+  const webOut = (name, buf) => sharp(buf).toFile(join(WEB_ICONS, name)).then(() => console.log('✓ web', name));
+  const webSizes = [16, 32, 48, 96, 120, 152, 167, 180, 192, 512];
+  for (const px of webSizes) {
+    await webOut(`icon-${px}.png`, await sharp(icon).resize(px, px).png().toBuffer());
+  }
+  // Maskable: mark padded inside a teal tile (safe for the maskable mask).
+  const maskable = await composite(bgSvg, markSvg, 0.6, { flatten: true });
+  await webOut('maskable-512.png', await sharp(maskable).resize(512, 512).png().toBuffer());
+  await webOut('maskable-192.png', await sharp(maskable).resize(192, 192).png().toBuffer());
 }
 
 main().catch((err) => {
