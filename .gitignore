@@ -76,3 +76,4 @@ scraped_images/
 scripts/py/.chrome-profile/
 .vercel
 .env
+.push-broadcast-secret.env
