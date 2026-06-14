@@ -291,12 +291,14 @@ async function uploadScreenshot(setId, filePath) {
   return shot.id;
 }
 
-async function cmdScreenshots(dir) {
-  if (!dir) throw new Error('usage: screenshots <dir>');
+async function cmdScreenshots(dir, displayTypeArg) {
+  if (!dir) throw new Error('usage: screenshots <dir> [displayType]');
   const v = await editableVersion();
   const loc = await versionLocalization(v.id);
-  // 6.9" display = APP_IPHONE_67 (Apple's enum still uses 67 for the 6.7/6.9 family).
-  const displayType = 'APP_IPHONE_67';
+  // 6.9" iPhone = APP_IPHONE_67 (Apple's enum still uses 67 for the 6.7/6.9
+  // family); 12.9" iPad = APP_IPAD_PRO_3GEN_129. Required because the build
+  // ships supportsTablet=true. Override via the second arg.
+  const displayType = displayTypeArg || 'APP_IPHONE_67';
   // Find or create the screenshot set for this display type.
   const sets = await asc('GET', `/appStoreVersionLocalizations/${loc.id}/appScreenshotSets`);
   let set = (sets.data || []).find((s) => s.attributes.screenshotDisplayType === displayType);
@@ -390,7 +392,7 @@ try {
     case 'age-rating': await cmdAgeRating(); break;
     case 'content-rights': await cmdContentRights(); break;
     case 'pricing': await cmdPricing(); break;
-    case 'screenshots': await cmdScreenshots(rest[0]); break;
+    case 'screenshots': await cmdScreenshots(rest[0], rest[1]); break;
     case 'attach-build': await cmdAttachBuild(rest[0]); break;
     case 'review-detail': await cmdReviewDetail(rest[0], rest[1], rest[2], rest[3]); break;
     case 'submit': await cmdSubmit(); break;
