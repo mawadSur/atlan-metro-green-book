@@ -1,0 +1,13 @@
+{
+  "_comment": "App Store listing content for Muslim Green Book (ASC app 6778497186). Consumed by scripts/asc-submit.mjs. Edit copy here, then run the script subcommands.",
+  "locale": "en-US",
+  "name": "Muslim Green Book",
+  "subtitle": "Halal places, prayer & Qibla",
+  "privacyPolicyUrl": "https://atlan-green-book.vercel.app/privacy",
+  "supportUrl": "https://atlan-green-book.vercel.app",
+  "marketingUrl": "https://atlan-green-book.vercel.app",
+  "promotionalText": "Heading to Atlanta for the FIFA World Cup 2026? Find halal food, mosques, prayer spaces, and the Qibla direction — in English, Arabic, and Spanish.",
+  "description": "Muslim Green Book is your guide to Muslim-friendly places across metro Atlanta — built for residents and for visitors arriving for the FIFA World Cup 2026.\n\nFind halal restaurants, mosques, markets, family attractions and more on a beautiful interactive map, then get directions, hours, and contact details in one tap. Filter by what matters to you: halal, alcohol-free, prayer space, and family-friendly.\n\nFEATURES\n\n• Interactive map & list — browse 80+ verified and community-listed places around Atlanta, each with photos, address, and category.\n• Honest halal labeling — every place is clearly marked as halal-verified or community-listed, so you always know what's confirmed.\n• Prayer times & Qibla — accurate daily prayer times for your location plus a Qibla compass, computed on-device.\n• Powerful filters — narrow results to halal, alcohol-free, prayer space, or family-friendly in a tap.\n• Save your favorites — keep a personal list of the places you want to visit.\n• Three languages — full English, Arabic (with right-to-left layout), and Spanish.\n\nNo account required. Your location stays on your device and is only used to show nearby places, prayer times, and the Qibla direction.\n\nWhether you live in Atlanta or you're visiting for the World Cup, Muslim Green Book helps you eat well, pray on time, and feel at home.",
+  "keywords": "halal,muslim,mosque,prayer,qibla,islam,ramadan,atlanta,halal food,masjid,salah,worldcup",
+  "whatsNew": "Initial release. Discover halal places, mosques, prayer times, and the Qibla direction across metro Atlanta — in English, Arabic, and Spanish."
+}
