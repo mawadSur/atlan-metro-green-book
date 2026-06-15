@@ -60,6 +60,28 @@ export const tp: Record<string, Dict> = {
   saveError: { en: 'Could not save. Try again.', ar: 'تعذّر الحفظ. حاول مجددًا.', es: 'No se pudo guardar.' },
   authError: { en: 'Wrong email or password.', ar: 'بريد إلكتروني أو كلمة مرور خاطئة.', es: 'Correo o contraseña incorrectos.' },
 
+  // Portal — sign up
+  noAccount: { en: 'New business? Create an account', ar: 'عمل جديد؟ أنشئ حسابًا', es: '¿Negocio nuevo? Crea una cuenta' },
+  signUpTitle: { en: 'Create your business account', ar: 'أنشئ حساب عملك', es: 'Crea tu cuenta de negocio' },
+  signUpSubtitle: {
+    en: 'Sign up to claim your listing and manage your discount offer.',
+    ar: 'سجّل لتطلب إدارة قائمتك وعرض الخصم الخاص بك.',
+    es: 'Regístrate para reclamar tu ficha y gestionar tu oferta.',
+  },
+  createAccount: { en: 'Create account', ar: 'إنشاء حساب', es: 'Crear cuenta' },
+  creatingAccount: { en: 'Creating account…', ar: 'جارٍ إنشاء الحساب…', es: 'Creando cuenta…' },
+  passwordHint: { en: 'At least 8 characters', ar: '٨ أحرف على الأقل', es: 'Al menos 8 caracteres' },
+  signUpCheckEmail: {
+    en: 'Almost there — we sent a confirmation link to your email. Open it to activate your account, then sign in.',
+    ar: 'اقتربت — أرسلنا رابط تأكيد إلى بريدك. افتحه لتفعيل حسابك ثم سجّل الدخول.',
+    es: 'Casi listo — enviamos un enlace de confirmación a tu correo. Ábrelo para activar tu cuenta y luego inicia sesión.',
+  },
+  signUpError: {
+    en: 'Could not create the account. Check your email and use a password of at least 8 characters.',
+    ar: 'تعذّر إنشاء الحساب. تحقق من بريدك واستخدم كلمة مرور من ٨ أحرف على الأقل.',
+    es: 'No se pudo crear la cuenta. Revisa tu correo y usa una contraseña de al menos 8 caracteres.',
+  },
+
   // Portal — password reset
   forgotPassword: { en: 'Forgot password?', ar: 'نسيت كلمة المرور؟', es: '¿Olvidaste tu contraseña?' },
   resetTitle: { en: 'Reset your password', ar: 'إعادة تعيين كلمة المرور', es: 'Restablecer contraseña' },

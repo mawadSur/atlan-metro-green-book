@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 import type { Lang } from '@/lib/types';
 import { tp } from '@/i18n/portal';
 import { signIn } from '@/lib/auth';
 import { ForgotPasswordForm } from './ForgotPasswordForm';
+import { SignUpForm } from './SignUpForm';
 
 interface LoginFormProps {
   lang: Lang;
@@ -19,9 +20,14 @@ export function LoginForm({ lang, onSignedIn }: LoginFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [forgot, setForgot] = useState(false);
+  const [signup, setSignup] = useState(false);
 
   if (forgot) {
     return <ForgotPasswordForm lang={lang} onBack={() => setForgot(false)} />;
+  }
+
+  if (signup) {
+    return <SignUpForm lang={lang} onBack={() => setSignup(false)} />;
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -104,6 +110,17 @@ export function LoginForm({ lang, onSignedIn }: LoginFormProps) {
           {tp.forgotPassword[lang]}
         </button>
       </form>
+
+      <div className="mt-6 pt-4 border-t border-stone-200">
+        <button
+          type="button"
+          onClick={() => setSignup(true)}
+          className="w-full h-11 flex items-center justify-center gap-2 text-sm font-medium text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-lg cursor-pointer focus:outline-none focus-visible:ring-2 ring-teal-600 active:scale-[0.98] transition-all motion-safe:duration-150"
+        >
+          <UserPlus size={18} />
+          {tp.noAccount[lang]}
+        </button>
+      </div>
 
       {error && (
         <div role="alert" className="mt-4 text-sm text-red-600">
