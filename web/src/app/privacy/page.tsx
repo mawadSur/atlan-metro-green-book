@@ -108,10 +108,10 @@ export default function PrivacyPage() {
             <p>
               Questions about this policy or requests to remove your data? Email{' '}
               <a
-                href="mailto:privacy@atlangreenbook.com"
+                href="mailto:mawad@surconsultinggroup.com"
                 className="text-teal-700 underline hover:text-teal-800"
               >
-                privacy@atlangreenbook.com
+                mawad@surconsultinggroup.com
               </a>
               .
             </p>
