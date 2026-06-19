@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, QrCode } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type { Lang } from '@/lib/types';
@@ -154,6 +154,15 @@ function AdminInner() {
               >
                 {ta.tabUsers[lang]}
               </button>
+              <a
+                href="/print/match-day-flyer.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ms-auto inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-teal-700 hover:text-emerald-800 focus:outline-none focus-visible:ring-2 ring-teal-600 rounded-t transition-colors motion-safe:duration-150 cursor-pointer"
+              >
+                <QrCode size={16} />
+                {ta.marketingAssets[lang]}
+              </a>
             </nav>
 
             {/* Tab content */}

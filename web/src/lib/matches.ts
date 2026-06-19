@@ -1,12 +1,11 @@
 // Match data model for the World Cup match pages.
 // Pure data + helpers — NO 'use client' / NO 'use server'.
 //
-// KICKOFF TIMES: confirmed against the Mercedes-Benz Stadium (Atlanta) 2026
-// FIFA World Cup fixture list (en.wikipedia.org/wiki/Mercedes-Benz_Stadium,
-// retrieved 2026-06-07). All four venue matches and kickoff clock times below
-// match that source. Still flagged "// VERIFY kickoff vs FIFA.com" because FIFA
-// is the single source of truth and times can shift. Kickoffs are centralized
-// here so a fix is one line per match.
+// KICKOFF TIMES: verified 2026-06-18 against FIFA.com / official Mercedes-Benz
+// Stadium event pages, cross-checked with NBC Sports and primary ticketing
+// (AXS, SeatGeek, Ticketmaster). All four venue matches, matchups and kickoff
+// clock times below were confirmed and now carry per-line "// confirmed ..."
+// markers. Kickoffs are centralized here so a fix is one line per match.
 //
 // Atlanta observes EDT (UTC-04:00) in June/July, so the America/New_York offset
 // is -04:00 for every match below.
@@ -84,7 +83,7 @@ const TBD: MatchTeam = {
 export const MATCHES: Match[] = [
   {
     slug: 'spain-saudi-arabia',
-    kickoff: '2026-06-21T12:00:00-04:00', // VERIFY kickoff vs FIFA.com
+    kickoff: '2026-06-21T12:00:00-04:00', // confirmed vs FIFA.com / MBS event page 2026-06-18
     venueTz: VENUE_TZ,
     home: SPAIN,
     away: SAUDI_ARABIA,
@@ -93,7 +92,7 @@ export const MATCHES: Match[] = [
   },
   {
     slug: 'morocco-haiti',
-    kickoff: '2026-06-24T18:00:00-04:00', // VERIFY kickoff vs FIFA.com
+    kickoff: '2026-06-24T18:00:00-04:00', // confirmed vs FIFA.com / MBS event page 2026-06-18
     venueTz: VENUE_TZ,
     home: MOROCCO,
     away: HAITI,
@@ -102,7 +101,7 @@ export const MATCHES: Match[] = [
   },
   {
     slug: 'dr-congo-uzbekistan',
-    kickoff: '2026-06-27T19:30:00-04:00', // VERIFY kickoff vs FIFA.com
+    kickoff: '2026-06-27T19:30:00-04:00', // confirmed vs FIFA.com / MBS event page 2026-06-18
     venueTz: VENUE_TZ,
     home: DR_CONGO,
     away: UZBEKISTAN,
@@ -111,7 +110,7 @@ export const MATCHES: Match[] = [
   },
   {
     slug: 'semifinal-atlanta',
-    kickoff: '2026-07-15T15:00:00-04:00', // VERIFY kickoff vs FIFA.com
+    kickoff: '2026-07-15T15:00:00-04:00', // confirmed vs NBC Sports / MBS event page 2026-06-18 (teams TBD)
     venueTz: VENUE_TZ,
     home: TBD,
     away: TBD,

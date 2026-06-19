@@ -7,6 +7,11 @@ export const ta: Record<string, Dict> = {
   // Navigation
   back: { en: 'Back', ar: 'رجوع', es: 'Volver' },
   adminTitle: { en: 'Admin Portal', ar: 'بوابة الإدارة', es: 'Portal de Administración' },
+  marketingAssets: {
+    en: 'Marketing / QR codes',
+    ar: 'مواد التسويق / رموز QR',
+    es: 'Marketing / Códigos QR'
+  },
 
   // Auth
   email: { en: 'Email', ar: 'البريد الإلكتروني', es: 'Correo' },
