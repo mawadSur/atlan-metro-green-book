@@ -1,7 +1,7 @@
 // Match-page + email + share strings.
 //
 // NO directive. Same shape as web/src/i18n/strings.ts: Record<string, {en,ar,es}>.
-// Arabic is written for a Gulf/Arab World Cup audience — natural and idiomatic,
+// Arabic is written for a Gulf/Arab match-day audience — natural and idiomatic,
 // not a literal word-for-word translation.
 
 import type { Lang } from '@/lib/types';
@@ -76,9 +76,9 @@ export const m: Record<string, Dict> = {
     es: 'Vivo aquí',
   },
   email_audience_visitor: {
-    en: "I'm visiting for the World Cup",
-    ar: 'أنا زائر لحضور كأس العالم',
-    es: 'Estoy de visita por el Mundial',
+    en: "I'm visiting for the matches",
+    ar: 'أنا زائر لحضور المباريات',
+    es: 'Estoy de visita por los partidos',
   },
   email_consent: {
     en: 'We store your email only to send you the match-day halal + prayer guide. No spam — unsubscribe anytime via the link in every email.',

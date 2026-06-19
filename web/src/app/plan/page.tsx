@@ -1,4 +1,4 @@
-// "My World Cup plan" — the shared save-list view (Feature 3 / T8).
+// "My match-day plan" — the shared save-list view (Feature 3 / T8).
 //
 // A fan saves ♡ spots across match pages, taps "Share my plan", and sends a
 // /plan?saved=<base64url> link. This route decodes that token (server-side, the
@@ -16,9 +16,9 @@ import { getLocationsByIds } from '@/lib/supabase';
 import PlanView from './PlanView';
 
 export const metadata: Metadata = {
-  title: 'My World Cup Plan — Atlan Metro Green Book',
+  title: 'My Match-Day Plan — Atlan Metro Green Book',
   description:
-    'A shared halal + prayer plan for the World Cup in Atlanta — verified spots near Mercedes-Benz Stadium.',
+    'A shared halal + prayer plan for the matches in Atlanta — verified spots near Mercedes-Benz Stadium.',
 };
 
 export default async function PlanPage({

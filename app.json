@@ -14,7 +14,7 @@
       "backgroundColor": "#0f766e"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.atlangreenbook.app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your location is used to show nearby halal places, mosques, prayer times, and the Qibla direction.",

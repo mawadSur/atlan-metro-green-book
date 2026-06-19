@@ -37,8 +37,8 @@ export default function PrivacyPage() {
           <p>
             Atlan Metro Green Book (&ldquo;we&rdquo;, &ldquo;us&rdquo;) helps
             Muslims find mosques, halal restaurants, prayer spaces, prayer times,
-            and the Qibla direction across Metro Atlanta and FIFA World Cup 2026
-            host cities. This policy explains what data the website and mobile
+            and the Qibla direction across Metro Atlanta and other U.S. host
+            cities. This policy explains what data the website and mobile
             apps collect and how it is used. We collect as little as possible.
           </p>
 

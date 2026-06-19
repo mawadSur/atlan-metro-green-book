@@ -17,14 +17,14 @@ import LocationCard from '@/components/LocationCard';
 import LangSwitcher from '@/components/LangSwitcher';
 
 const TITLE: Record<Lang, string> = {
-  en: 'My World Cup plan',
-  ar: 'خطتي لكأس العالم',
-  es: 'Mi plan para el Mundial',
+  en: 'My match-day plan',
+  ar: 'خطتي ليوم المباراة',
+  es: 'Mi plan de día de partido',
 };
 const SUBTITLE: Record<Lang, string> = {
-  en: 'Halal + prayer spots saved for the World Cup in Atlanta.',
-  ar: 'أماكن حلال وصلاة محفوظة لكأس العالم في أتلانتا.',
-  es: 'Sitios halal y de oración guardados para el Mundial en Atlanta.',
+  en: 'Halal + prayer spots saved for the matches in Atlanta.',
+  ar: 'أماكن حلال وصلاة محفوظة للمباريات في أتلانتا.',
+  es: 'Sitios halal y de oración guardados para los partidos en Atlanta.',
 };
 const EMPTY: Record<Lang, string> = {
   en: 'This plan is empty or the link has expired. Browse Atlanta halal + prayer spots to build your own.',

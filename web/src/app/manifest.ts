@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Atlan Metro Green Book",
     short_name: "Green Book",
     description:
-      "Find mosques, halal restaurants, markets and family attractions across Metro Atlanta. Bilingual English / العربية / Español. Built for FIFA World Cup 2026.",
+      "Find mosques, halal restaurants, markets and family attractions across Metro Atlanta. Bilingual English / العربية / Español. Ready for the big matches this summer.",
     start_url: "/",
     display: "standalone",
     background_color: "#fafaf9",

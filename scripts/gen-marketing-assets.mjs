@@ -98,7 +98,7 @@ const MATCHES = [
 ].map((m) => ({ ...m, kickoff: KICKOFFS[m.slug], date: formatKickoff(KICKOFFS[m.slug]) }));
 
 // Caption for the generic homepage QRs, which have no single match date.
-const HOME_OCCASION = 'World Cup 2026 · Atlanta';
+const HOME_OCCASION = 'Summer 2026 Matches · Atlanta';
 
 // --- Channel templates -------------------------------------------------------
 // Each template is instantiated per-match (dest:'match') or once (dest:'home').

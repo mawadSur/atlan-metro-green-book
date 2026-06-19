@@ -6,7 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { supabase } from './supabase';
 import type { Lang } from './types';
 
-// Remote push notifications (World Cup match alerts + app-wide announcements).
+// Remote push notifications (match alerts + app-wide announcements).
 //
 // Flow: the user opts in from the More tab -> we request OS permission, fetch
 // this device's Expo push token, and register it via the write-only

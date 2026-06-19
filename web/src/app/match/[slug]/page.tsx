@@ -61,7 +61,7 @@ export async function generateMetadata({
   if (!match) return {};
 
   const title = `${match.home.name_en} v ${match.away.name_en} — Halal & Prayer Plan | Atlanta`;
-  const description = `Your match-day halal food + prayer plan for ${match.home.name_en} v ${match.away.name_en} at Mercedes-Benz Stadium, Atlanta. Walkable halal spots, the nearest masjid, and prayer times around kickoff — built for World Cup 2026.`;
+  const description = `Your match-day halal food + prayer plan for ${match.home.name_en} v ${match.away.name_en} at Mercedes-Benz Stadium, Atlanta. Walkable halal spots, the nearest masjid, and prayer times around kickoff — for the big matches this summer.`;
 
   return {
     title,

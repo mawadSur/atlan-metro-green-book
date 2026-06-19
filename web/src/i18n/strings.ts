@@ -78,7 +78,7 @@ export const t: Record<string, Dict> = {
   landing_appstore: { en: 'App Store', ar: 'متجر التطبيقات', es: 'App Store' },
   landing_playstore: { en: 'Google Play', ar: 'جوجل بلاي', es: 'Google Play' },
   landing_dismiss: { en: 'Dismiss', ar: 'تجاهل', es: 'Cerrar' },
-  landing_wc_tagline: { en: 'Explore FIFA World Cup 2026 stadiums with prayer spaces and halal dining nearby', ar: 'استكشف ملاعب كأس العالم لكرة القدم ٢٠٢٦ مع المصليات والمطاعم الحلال القريبة', es: 'Explora los estadios de la Copa Mundial FIFA 2026 con salas de oración y comida halal cercana' },
+  landing_wc_tagline: { en: 'Find prayer spaces and halal dining near Mercedes-Benz Stadium for the big matches this summer', ar: 'اعثر على المصليات والمطاعم الحلال قرب ملعب مرسيدس-بنز لمباريات هذا الصيف الكبرى', es: 'Encuentra salas de oración y comida halal cerca del Estadio Mercedes-Benz para los grandes partidos de este verano' },
   landing_reopen: { en: 'Show intro', ar: 'عرض المقدمة', es: 'Mostrar introducción' },
   errorTitle: { en: 'Something went wrong', ar: 'حدث خطأ ما', es: 'Algo salió mal' },
   errorBody: { en: 'We encountered an unexpected error. Please try again.', ar: 'واجهنا خطأ غير متوقع. يرجى المحاولة مرة أخرى.', es: 'Encontramos un error inesperado. Por favor, inténtalo de nuevo.' },
@@ -97,5 +97,5 @@ export const TYPE_LABELS: Record<LocationType, Dict> = {
   museum: { en: 'Museum', ar: 'متحف', es: 'Museo' },
   attraction: { en: 'Attraction', ar: 'معلم', es: 'Atracción' },
   mall: { en: 'Mall', ar: 'مركز تسوق', es: 'Centro comercial' },
-  worldcup_venue: { en: 'World Cup', ar: 'كأس العالم', es: 'Mundial' },
+  worldcup_venue: { en: 'Match Day', ar: 'يوم المباراة', es: 'Día de partido' },
 };

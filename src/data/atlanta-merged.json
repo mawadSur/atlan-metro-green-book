@@ -2007,10 +2007,10 @@
       "alcohol_free": false,
       "prayer_space": true,
       "family_friendly": false,
-      "discount_code": "GREENWC2026",
-      "discount_offer_en": "10% off official World Cup merch at stadium store",
-      "discount_offer_ar": "خصم ١٠٪ على بضاعة كأس العالم الرسمية في متجر الملعب",
-      "discount_offer_es": "10% de descuento en productos oficiales del Mundial en la tienda del estadio",
+      "discount_code": "GREENATL2026",
+      "discount_offer_en": "10% off merch at the stadium store",
+      "discount_offer_ar": "خصم ١٠٪ على البضائع في متجر الملعب",
+      "discount_offer_es": "10% de descuento en productos en la tienda del estadio",
       "worldcup_special": true
     }
   ]

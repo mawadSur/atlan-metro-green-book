@@ -2,18 +2,18 @@ import type { Lang } from '@/lib/types';
 
 type Dict = Record<Lang, string>;
 
-// Strings for the business portal, navigation, and World Cup section.
+// Strings for the business portal, navigation, and match-day section.
 // Kept separate from strings.ts to avoid edit collisions during parallel build.
 export const tp: Record<string, Dict> = {
   // Navigation
   nav_places: { en: 'Places', ar: 'الأماكن', es: 'Lugares' },
   nav_prayer: { en: 'Prayer', ar: 'الصلاة', es: 'Oración' },
-  nav_worldcup: { en: 'World Cup', ar: 'كأس العالم', es: 'Mundial' },
+  nav_worldcup: { en: 'Match Day', ar: 'يوم المباراة', es: 'Día de partido' },
   nav_portal: { en: 'Business', ar: 'الأعمال', es: 'Negocios' },
   back: { en: 'Back', ar: 'رجوع', es: 'Volver' },
 
-  // World Cup
-  wc_title: { en: 'FIFA World Cup 2026', ar: 'كأس العالم ٢٠٢٦', es: 'Copa Mundial 2026' },
+  // Match day (summer 2026 matches at Mercedes-Benz Stadium)
+  wc_title: { en: 'Summer 2026 Matches', ar: 'مباريات صيف ٢٠٢٦', es: 'Partidos verano 2026' },
   wc_subtitle: {
     // Honest framing: the stadium has no prayer room — we point to the nearest.
     en: 'Halal food + prayer near Mercedes-Benz Stadium, by match day',
@@ -176,7 +176,7 @@ export const tp: Record<string, Dict> = {
   alcoholFree: { en: 'Alcohol-free', ar: 'خالٍ من الكحول', es: 'Sin alcohol' },
   prayerSpace: { en: 'Prayer space', ar: 'مصلى', es: 'Espacio de oración' },
   familyFriendly: { en: 'Family friendly', ar: 'مناسب للعائلات', es: 'Apto para familias' },
-  worldcupSpecial: { en: 'World Cup special', ar: 'عرض كأس العالم', es: 'Especial del Mundial' },
+  worldcupSpecial: { en: 'Match-day special', ar: 'عرض يوم المباراة', es: 'Especial de día de partido' },
 };
 
 export const localeFor = (lang: Lang): string =>

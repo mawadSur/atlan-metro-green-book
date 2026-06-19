@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   ),
   title: "Atlan Metro Green Book — Muslim-Friendly Places in Atlanta",
   description:
-    "Find mosques, halal restaurants, markets and family attractions across Metro Atlanta. Bilingual English / العربية / Español. Built for the FIFA World Cup 2026.",
+    "Find mosques, halal restaurants, markets and family attractions across Metro Atlanta. Bilingual English / العربية / Español. Ready for the big matches this summer.",
   applicationName: "Atlan Metro Green Book",
   appleWebApp: {
     capable: true,
