@@ -381,6 +381,33 @@ async function cmdSubmit() {
   console.log('✓ SUBMITTED for review. reviewSubmission id =', subId);
 }
 
+// Cancel the reviewSubmission that's locking the (rejected) version. After a
+// rejection the version stays bound to its existing reviewSubmission, so a new
+// `submit` 409s with "apps … not in valid state" / ITEM_PART_OF_ANOTHER_SUBMISSION.
+// Cancel it (PATCH canceled:true), poll until it leaves CANCELING, then `submit`
+// works. Pass an id, or omit to auto-detect the active (non-terminal) one.
+async function cmdCancelSubmission(subId) {
+  if (!subId) {
+    const subs = await asc('GET', `/apps/${APP_ID}/reviewSubmissions?limit=20`);
+    const active = (subs.data || []).find(
+      (s) => !s.attributes?.canceled && !['COMPLETE', 'CANCELING'].includes(s.attributes?.state)
+    );
+    subId = active?.id;
+    if (!subId) { console.log('no active reviewSubmission to cancel'); return; }
+  }
+  await asc('PATCH', `/reviewSubmissions/${subId}`, {
+    data: { type: 'reviewSubmissions', id: subId, attributes: { canceled: true } },
+  });
+  console.log('✓ cancel requested for reviewSubmission', subId);
+  for (let i = 0; i < 20; i++) {
+    const r = await asc('GET', `/reviewSubmissions/${subId}`);
+    const st = r.data?.attributes?.state;
+    console.log('  state:', st);
+    if (st && st !== 'CANCELING') break;
+    await new Promise((res) => setTimeout(res, 3000));
+  }
+}
+
 // --- dispatch ----------------------------------------------------------------
 
 const [cmd, ...rest] = process.argv.slice(2);
@@ -396,8 +423,9 @@ try {
     case 'attach-build': await cmdAttachBuild(rest[0]); break;
     case 'review-detail': await cmdReviewDetail(rest[0], rest[1], rest[2], rest[3]); break;
     case 'submit': await cmdSubmit(); break;
+    case 'cancel-submission': await cmdCancelSubmission(rest[0]); break;
     default:
-      console.log('subcommands: state | metadata | category | age-rating | content-rights | pricing | screenshots <dir> | attach-build <buildId> | review-detail <first> <last> <email> <phone> | submit');
+      console.log('subcommands: state | metadata | category | age-rating | content-rights | pricing | screenshots <dir> | attach-build <buildId> | review-detail <first> <last> <email> <phone> | submit | cancel-submission [id]');
   }
 } catch (e) {
   console.error('ERROR:', e.message);
