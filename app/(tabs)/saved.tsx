@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { useFavorites } from '../../src/lib/useFavorites';
 import { t } from '../../src/i18n/strings';
-import { colors, spacing, maxFontScale } from '../../src/theme/colors';
+import { colors, spacing, maxFontScale, contentMaxWidth } from '../../src/theme/colors';
 import type { Location } from '../../src/lib/types';
 import { LocationCard } from '../../src/components/LocationCard';
 
@@ -129,5 +129,8 @@ const styles = StyleSheet.create({
   list: {
     padding: spacing.md,
     gap: spacing.md,
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
 });

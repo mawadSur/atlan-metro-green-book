@@ -41,3 +41,10 @@ export const typeScale = {
 // Cap Dynamic Type so very large accessibility text sizes don't shatter
 // fixed-height layouts. Pass to <Text maxFontSizeMultiplier={maxFontScale}>.
 export const maxFontScale = 1.4;
+
+// Max width for a single content column. The app is universal (iPhone + iPad);
+// on the large iPad canvas this caps and centers content so lists, forms, and
+// reading surfaces stay legible instead of stretching edge-to-edge. On phones
+// (screen width < this) it's a no-op. Apply as:
+//   { width: '100%', maxWidth: contentMaxWidth, alignSelf: 'center' }
+export const contentMaxWidth = 640;

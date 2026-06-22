@@ -13,7 +13,7 @@ import MapView, { Marker } from 'react-native-maps';
 import * as ExpoLocation from 'expo-location';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
-import { getLocations } from '../../src/lib/supabase';
+import { getLocations, getSeedLocations } from '../../src/lib/supabase';
 import type { Location, Filters } from '../../src/lib/types';
 import type { Coordinates } from '../../src/lib/geo';
 import { LocationCard } from '../../src/components/LocationCard';
@@ -22,7 +22,7 @@ import { typeStyle } from '../../src/lib/display';
 import { t } from '../../src/i18n/strings';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, maxFontScale } from '../../src/theme/colors';
+import { colors, maxFontScale, contentMaxWidth } from '../../src/theme/colors';
 
 const ATLANTA_CENTER = { lat: 33.7545, lng: -84.3898 };
 const MAX_MARKERS = 300;
@@ -55,10 +55,20 @@ export default function MapListScreen() {
       setLoading(true);
       setError(null);
       const data = await getLocations('atlanta');
-      setLocations(data);
+      // getLocations already falls back to the bundled seed on failure, but
+      // guard here too so the reviewer is never left on an empty screen with no
+      // controls to operate.
+      setLocations(data.length > 0 ? data : getSeedLocations('atlanta'));
     } catch (err) {
-      setError(t.errorLoadingPlaces[lang]);
-      console.error('Failed to load locations:', err);
+      // Last-resort fallback: render the bundled data instead of an error wall
+      // that hides the search box, filters, and map/list toggle entirely.
+      console.warn('Failed to load locations; using offline seed:', err);
+      const seed = getSeedLocations('atlanta');
+      if (seed.length > 0) {
+        setLocations(seed);
+      } else {
+        setError(t.errorLoadingPlaces[lang]);
+      }
     } finally {
       setLoading(false);
     }
@@ -153,6 +163,7 @@ export default function MapListScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.headerArea}>
       {/* Search bar */}
       <View style={styles.searchBar}>
         <Ionicons name="search" size={20} color={colors.inkMuted} style={styles.searchIcon} />
@@ -168,6 +179,7 @@ export default function MapListScreen() {
           <Pressable
             onPress={() => setSearchQuery('')}
             style={styles.clearButton}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             accessibilityRole="button"
             accessibilityLabel={
               lang === 'ar' ? 'مسح البحث' : lang === 'es' ? 'Borrar búsqueda' : 'Clear search'
@@ -238,6 +250,7 @@ export default function MapListScreen() {
           </Text>
         )}
       </View>
+      </View>
 
       {/* Map view */}
       {viewMode === 'map' && (
@@ -302,6 +315,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
+  },
+  // Cap + center the search/filter/toggle controls on the large iPad canvas so
+  // they don't stretch full width (no-op on phones). The map stays full-bleed.
+  headerArea: {
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
   centerContainer: {
     flex: 1,
@@ -424,6 +444,9 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingVertical: 8,
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
   emptyContainer: {
     flex: 1,

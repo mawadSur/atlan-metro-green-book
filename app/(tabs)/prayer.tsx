@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../src/lib/LangContext';
 import { PrayerTimesComponent } from '../../src/components/PrayerTimes';
 import { QiblaCompass } from '../../src/components/QiblaCompass';
+import { contentMaxWidth } from '../../src/theme/colors';
 
 export default function PrayerScreen() {
   const { lang } = useLang();
@@ -32,6 +33,9 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
   section: {
     marginBottom: 16,

@@ -8,21 +8,18 @@ import {
   Pressable,
   Linking,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { supabase } from '../../src/lib/supabase';
+import { getLocationById } from '../../src/lib/supabase';
 import { useLang } from '../../src/lib/LangContext';
 import { typeStyle, typeLabel, localized, discountOffer, googleMapsUrl } from '../../src/lib/display';
 import { HalalBadge } from '../../src/components/HalalBadge';
 import { useFavorites } from '../../src/lib/useFavorites';
 import { t } from '../../src/i18n/strings';
 import type { Location, Lang } from '../../src/lib/types';
-import { colors, maxFontScale } from '../../src/theme/colors';
-
-const { width } = Dimensions.get('window');
+import { colors, maxFontScale, contentMaxWidth } from '../../src/theme/colors';
 
 export default function LocationDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,14 +35,10 @@ export default function LocationDetailScreen() {
     async function fetchLocation() {
       if (!id) return;
       try {
-        const { data, error } = await supabase
-          .from('locations')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (error) throw error;
-        setLocation(data as Location);
+        // Resolves from the live backend, falling back to bundled data when
+        // offline so seed records (and a down backend) still open.
+        const data = await getLocationById(id as string);
+        setLocation(data);
       } catch (err) {
         console.error('Error fetching location:', err);
       } finally {
@@ -105,7 +98,7 @@ export default function LocationDetailScreen() {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: name }} />
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Hero Image */}
         <View style={styles.heroContainer}>
           {location.image_url && !imageError ? (
@@ -287,6 +280,12 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  // Cap + center the detail column on the large iPad canvas (no-op on phones).
+  scrollContent: {
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
+  },
   heroContainer: {
     height: 240,
     width: '100%',
@@ -445,6 +444,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#e7e5e4',
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
   actionButton: {
     flex: 1,

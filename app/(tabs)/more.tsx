@@ -15,7 +15,7 @@ import { useLang } from '../../src/lib/LangContext';
 import { usePushOptIn } from '../../src/lib/usePushOptIn';
 import { sendLocalTest } from '../../src/lib/push';
 import { t, LANGS } from '../../src/i18n/strings';
-import { colors, spacing, maxFontScale } from '../../src/theme/colors';
+import { colors, spacing, maxFontScale, contentMaxWidth } from '../../src/theme/colors';
 
 export default function MoreScreen() {
   const { lang, setLang } = useLang();
@@ -47,7 +47,7 @@ export default function MoreScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <Text style={styles.headerTitle} maxFontSizeMultiplier={maxFontScale}>{t.more[lang]}</Text>
       </View>
@@ -164,6 +164,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
+  },
+  // Cap + center the settings column on the large iPad canvas (no-op on phones).
+  scrollContent: {
+    width: '100%',
+    maxWidth: contentMaxWidth,
+    alignSelf: 'center',
   },
   header: {
     paddingHorizontal: spacing.md,
