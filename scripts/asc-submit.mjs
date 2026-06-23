@@ -337,7 +337,7 @@ async function cmdReviewDetail(first, last, email, phone) {
     contactFirstName: first, contactLastName: last || '',
     contactEmail: email, contactPhone: phone,
     demoAccountRequired: false,
-    notes: 'No login required. Location permission is used on-device for nearby places, prayer times, and Qibla; data is not collected. Push notifications are opt-in.',
+    notes: LISTING.reviewNotes || 'No login required. Location permission is used on-device for nearby places, prayer times, and Qibla; data is not collected. Push notifications are opt-in.',
   };
   if (existing.data?.id) {
     await asc('PATCH', `/appStoreReviewDetails/${existing.data.id}`, {
