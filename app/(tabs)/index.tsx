@@ -30,7 +30,12 @@ const MAX_MARKERS = 300;
 export default function MapListScreen() {
   const { lang } = useLang();
   const insets = useSafeAreaInsets();
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  // Default to the List view (not the map). On iPad the react-native-maps
+  // MapView (New Arch / Fabric) can retain the touch responder so the header
+  // controls render but stop responding — the likely cause of the repeated iPad
+  // 2.1(a) "unable to set the widgets" rejections. Landing on the List keeps the
+  // first screen a plain, reliably-tappable FlatList; the map is one tap away.
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
