@@ -1,0 +1,30 @@
+type,name,address,phone_masked,current_hours,halal_status,prayer_space,call_status,confirmed_hours,confirmed_halal,notes,utm_source
+restaurant,Baraka Shawarma,"68 Walton St NW, Atlanta, GA 30303",+14046002004,"Mon-Thu 11AM-11PM, Fri-Sat 11AM-3AM, Sun 12PM-11PM",True,True,not_called,,,,verify_baraka_shawarma
+restaurant,Bismillah Cafe,"4022 Buford Hwy NE, Atlanta, GA 30345",+17703654244,Daily 11AM-10PM,True,True,not_called,,,,verify_bismillah_cafe
+restaurant,Che Butter Jonez,"1602 Lavista Rd NE, Atlanta, GA 30329",+14049665883,"Wed-Thu 11AM-7PM, Fri-Sat 12PM-8PM, Closed Mon-Tue",False,False,not_called,,,,verify_che_butter_jonez
+restaurant,Aamar's Indian Cuisine,"2090 Dunwoody Club Dr, Sandy Springs, GA 30350",+17708280004,Daily 11:30AM-9:30PM,True,False,not_called,,,,verify_aamar_s_indian_cuisine
+restaurant,Tassili's Raw Reality,"1059 Ralph David Abernathy Blvd SW, Atlanta, GA 30310",+14045485750,"Tue-Sat 11AM-7PM, Sun 1PM-5PM",True,False,not_called,,,,verify_tassili_s_raw_reality
+restaurant,Cafe Agora,"2002 Summit Blvd, Sandy Springs, GA 30319",+14043201424,"Sun-Thu 11AM-9PM, Fri-Sat 11AM-10PM",True,False,not_called,,,,verify_cafe_agora
+restaurant,Masti,"3000 Old Alabama Rd, Alpharetta, GA 30022",+17704677733,Daily 11AM-10PM,True,False,not_called,,,,verify_masti
+restaurant,Hot Cafe,"11030 Medlock Bridge Rd, Johns Creek, GA 30097",+16782616506,Daily 11AM-9PM,True,False,not_called,,,,verify_hot_cafe
+restaurant,Falafel Cafe,"950 Cobb Pkwy, Marietta, GA 30062",+17704290002,Tue-Sun 11AM-9PM,True,False,not_called,,,,verify_falafel_cafe
+restaurant,Madina Restaurant,"1451 Washington Rd, Jonesboro, GA 30236",+17706025455,Daily 10AM-10PM,True,False,not_called,,,,verify_madina_restaurant
+coffee,Chai & Co.,"63 Atlanta St, Marietta, GA 30060",+17704351234,"Daily 8AM-8PM, Ramadan extended",True,False,not_called,,,,verify_chai_co
+coffee,Land of a Thousand Hills,"2465 Cascade Rd SW, Atlanta, GA 30311",+14047666407,"Mon-Sat 7AM-6PM, Sun 8AM-5PM",False,False,not_called,,,,verify_land_of_a_thousand_hills
+grocery,Bazaar International Market,"2090 Dunwoody Club Dr, Sandy Springs, GA 30350",+17708280002,Daily 9AM-10PM,True,False,not_called,,,,verify_bazaar_international_market
+grocery,Jerusalem Market,"1463 Canton Rd, Marietta, GA 30066",+16782024447,Daily 9AM-9PM,True,False,not_called,,,,verify_jerusalem_market
+grocery,Sabri Mart,"1215 Indian Trail Rd, Norcross, GA 30093",+16784529377,Daily 8AM-10PM,True,False,not_called,,,,verify_sabri_mart
+masjid,Atlanta Masjid of Al-Islam,"560 Fayetteville Rd SE, Atlanta, GA 30316",+14043780011,Jumu'ah 1:00 PM,False,True,not_called,,,,verify_atlanta_masjid_of_al_islam
+masjid,Masjid Al-Farooq,"442 14th St NW, Atlanta, GA 30318",+14048761111,Jumu'ah 1:00 PM & 2:00 PM,False,True,not_called,,,,verify_masjid_al_farooq
+masjid,Al-Hedaya Islamic Center,"1880 Marietta Blvd NW, Atlanta, GA 30318",+14043552233,Jumu'ah 1:15 PM,False,True,not_called,,,,verify_al_hedaya_islamic_center
+masjid,Masjid Al-Muminun,"6096 Old National Hwy, Riverdale, GA 30296",+17707718867,Jumu'ah 1:30 PM,False,True,not_called,,,,verify_masjid_al_muminun
+masjid,Masjid Al-Quran Inc.,"500 McDonough Blvd SE, Atlanta, GA 30315",+14046225511,Contact masjid,False,True,not_called,,,,verify_masjid_al_quran_inc
+masjid,King Fahad Mosque,"4700 Tudor Dr, Atlanta, GA 30342",+14042570999,Jumu'ah 12:30 PM & 1:30 PM,False,True,not_called,,,,verify_king_fahad_mosque
+masjid,North Atlanta Masjid,"10800 Jones Bridge Rd, Alpharetta, GA 30022",+17703921544,Jumu'ah 1:15 PM,False,True,not_called,,,,verify_north_atlanta_masjid
+masjid,Masjid Al-Hedayah,"2200 Fowler St, Roswell, GA 30075",+17707171375,Jumu'ah 1:00 PM,False,True,not_called,,,,verify_masjid_al_hedayah
+masjid,Islamic Center of Alpharetta (ICA),"1200 N Point Dr, Alpharetta, GA 30022",+16787231613,Jumu'ah 1:00 PM (two khutbahs),False,True,not_called,,,,verify_islamic_center_of_alpharetta_ica
+masjid,Marietta Masjid,"536 Franklin Gateway SE, Marietta, GA 30067",+17707882212,Jumu'ah 1:00 PM,False,True,not_called,,,,verify_marietta_masjid
+masjid,Al-Farooq Masjid of Marietta,"34 S Marietta Pkwy SW, Marietta, GA 30064",+17707933216,Jumu'ah 1:15 PM,False,True,not_called,,,,verify_al_farooq_masjid_of_marietta
+masjid,Kennesaw Islamic Center,"2828 Summer St, Kennesaw, GA 30144",+17704490399,Jumu'ah 1:30 PM,False,True,not_called,,,,verify_kennesaw_islamic_center
+masjid,Al-Farooq Center (South),"3980 Jonesboro Rd, Forest Park, GA 30297",+14046081474,Jumu'ah 1:30 PM,False,True,not_called,,,,verify_al_farooq_center_south
+masjid,Masjid Ash-Shura,"1580 Eastside Dr, Conyers, GA 30013",+17704830997,Jumu'ah 1:00 PM,False,True,not_called,,,,verify_masjid_ash_shura

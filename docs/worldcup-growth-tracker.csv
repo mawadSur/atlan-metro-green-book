@@ -1,0 +1,8 @@
+channel,owner,utm_source,medium,link,status,metric,notes
+Al-Farooq mosque board,You/Hermes,mosque_alfarooq,qr,https://atlan-green-book.vercel.app/go?utm_source=mosque_alfarooq&utm_medium=qr&utm_campaign=worldcup26,pending founder ask,QR scans / second opens,Needs Y3 approval
+Restaurant table tents - Baraka,Hermes,tabletent_baraka,qr,https://atlan-green-book.vercel.app/go?utm_source=tabletent_baraka&utm_medium=qr&utm_campaign=worldcup26,ready,QR scans,Start with downtown food intent
+Restaurant table tents - general,Hermes,tabletent_general,qr,https://atlan-green-book.vercel.app/go?utm_source=tabletent_general&utm_medium=qr&utm_campaign=worldcup26,ready,QR scans,Use per-restaurant code when placing
+Influencer DMs,Hermes,influencer_dm,social,https://atlan-green-book.vercel.app/go?utm_source=influencer_dm&utm_medium=social&utm_campaign=worldcup26,ready draft,clicks/replies,Requires account send authorization
+Reddit r/worldcup,Hermes,reddit_worldcup,community,https://atlan-green-book.vercel.app/go?utm_source=reddit_worldcup&utm_medium=community&utm_campaign=worldcup26,ready draft,clicks/replies,"Post as useful resource, not spam"
+Morocco fan community,Hermes,reddit_morocco,community,https://atlan-green-book.vercel.app/go?utm_source=reddit_morocco&utm_medium=community&utm_campaign=worldcup26,ready draft,clicks/replies,Localize around fans travelling to Atlanta
+App Store search,Claude/Hermes,aso_appstore,organic,n/a,research complete,impressions/downloads,Update subtitle/keywords after app metadata access

@@ -1,0 +1,16 @@
+{
+  "city": {
+    "id": "monterrey",
+    "name_en": "Monterrey",
+    "name_ar": "",
+    "name_es": "",
+    "country": "México",
+    "center_lat": 25.6802019,
+    "center_lng": -100.315258,
+    "default_zoom": 11,
+    "source": "osm-onboarded",
+    "generated_from": "Monterrey, Nuevo Leon, Mexico"
+  },
+  "counts": {},
+  "locations": []
+}

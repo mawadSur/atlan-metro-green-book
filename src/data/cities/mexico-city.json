@@ -1,0 +1,43 @@
+{
+  "city": {
+    "id": "mexico-city",
+    "name_en": "Mexico City",
+    "name_ar": "",
+    "name_es": "",
+    "country": "México",
+    "center_lat": 19.3207722,
+    "center_lng": -99.1514678,
+    "default_zoom": 11,
+    "source": "osm-onboarded",
+    "generated_from": "Mexico City, Mexico"
+  },
+  "counts": {
+    "masjid": 1
+  },
+  "locations": [
+    {
+      "type": "masjid",
+      "name_en": "Baitul Afiyat Mosque",
+      "name_ar": "مسجد بيت العافية",
+      "name_es": "",
+      "address": "650 Avenida Insurgentes Norte, CDMX, 06430",
+      "lat": 19.460675,
+      "lng": -99.146712,
+      "phone": "",
+      "hours_en": "",
+      "hours_ar": "",
+      "hours_es": "",
+      "halal_certified": false,
+      "alcohol_free": true,
+      "prayer_space": true,
+      "family_friendly": true,
+      "discount_code": null,
+      "discount_offer_en": "",
+      "discount_offer_ar": "",
+      "discount_offer_es": "",
+      "worldcup_special": false,
+      "source": "osm",
+      "osm_id": "way/1238112250"
+    }
+  ]
+}

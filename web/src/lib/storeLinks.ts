@@ -1,16 +1,15 @@
 /**
  * App Store and Play Store configuration for native app download links.
  *
- * No native app published yet — leave URLs empty to render "Coming soon" state.
- * Paste the real https:// URL here when the App Store / Play Store listing is live.
+ * The iOS App Store listing is live; Android remains in "Coming soon" state
+ * until the Play Store listing is published.
  *
  * @example
  * // When published, update to:
- * // appStoreUrl: 'https://apps.apple.com/app/id...'
  * // playStoreUrl: 'https://play.google.com/store/apps/details?id=...'
  */
 export const storeLinks = {
-  appStoreUrl: '' as string,
+  appStoreUrl: 'https://apps.apple.com/us/app/muslim-green-book/id6778497186' as string,
   playStoreUrl: '' as string,
 };
 
